@@ -3,928 +3,1238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YTLCC Bot — Prototype</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>YTLCC Bot — Teams</title>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e2a;
-    --border: #252938;
-    --accent: #5b6ef5;
-    --accent2: #7c8eff;
-    --red: #f0545a;
-    --orange: #f5a623;
-    --green: #3ecf8e;
-    --text: #e8eaf0;
-    --muted: #6b7280;
-    --teams-purple: #6264a7;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    font-family: 'DM Mono', monospace;
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Teams-like top bar */
-  .topbar {
-    width: 100%;
-    background: #1f1f2e;
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .topbar-logo {
-    width: 24px;
-    height: 24px;
-    background: var(--teams-purple);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    color: white;
-  }
-
-  .topbar-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .topbar-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-left: 4px;
-  }
-
-  .topbar-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-left: auto;
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .topbar-status {
-    font-size: 11px;
-    color: var(--green);
-  }
-
-  /* Main layout */
-  .shell {
-    width: 100%;
-    max-width: 680px;
-    padding: 32px 16px 120px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  /* Chat messages */
-  .msg {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 24px;
-    animation: fadeUp 0.35s ease forwards;
-    opacity: 0;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-left: 4px;
-  }
-
-  .bot-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, var(--accent), var(--teams-purple));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  .user-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f5a623, #f0545a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: white;
-    flex-shrink: 0;
-  }
-
-  .msg-sender {
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .msg-time {
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  /* User message bubble */
-  .user-bubble {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px 12px 2px 12px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--text);
-    max-width: 85%;
-    align-self: flex-end;
-    line-height: 1.5;
-  }
-
-  .user-msg {
-    align-items: flex-end;
-  }
-
-  /* Bot card */
-  .bot-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px 12px 12px 12px;
-    overflow: hidden;
-    max-width: 100%;
-  }
-
-  .card-header {
-    padding: 12px 16px 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .card-subtitle {
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 1px;
-  }
-
-  .card-timestamp {
-    font-size: 10px;
-    color: var(--muted);
-    text-align: right;
-  }
-
-  .card-body {
-    padding: 14px 16px;
-  }
-
-  /* Task rows */
-  .task-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid #1e2230;
-    font-size: 12px;
-    line-height: 1.5;
-    transition: background 0.15s;
-  }
-
-  .task-row:last-child { border-bottom: none; }
-  .task-row:hover { background: rgba(91,110,245,0.04); border-radius: 6px; }
-
-  .task-dash {
-    color: var(--muted);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .task-content { flex: 1; }
-
-  .task-project {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent2);
-  }
-
-  .task-name {
-    color: var(--text);
-  }
-
-  .task-note {
-    color: var(--muted);
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 500;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .tag-blocked { background: rgba(240,84,90,0.15); color: var(--red); border: 1px solid rgba(240,84,90,0.3); }
-  .tag-urgent { background: rgba(245,166,35,0.12); color: var(--orange); border: 1px solid rgba(245,166,35,0.25); }
-  .tag-ok { background: rgba(62,207,142,0.1); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
-
-  .more-tasks {
-    font-size: 11px;
-    color: var(--muted);
-    padding: 10px 0 4px;
-    cursor: pointer;
-    transition: color 0.15s;
-  }
-
-  .more-tasks:hover { color: var(--accent2); }
-
-  /* Action buttons */
-  .card-actions {
-    padding: 10px 16px 14px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    border-top: 1px solid var(--border);
-  }
-
-  .action-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .action-btn:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(91,110,245,0.3);
-  }
-
-  .action-btn:active { transform: translateY(0); }
-
-  /* Typing indicator */
-  .typing {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .typing.visible { opacity: 1; }
-
-  .typing-dots {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 8px 12px;
-    border-radius: 12px;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--muted);
-    animation: bounce 1.2s infinite;
-  }
-
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-5px); opacity: 1; }
-  }
-
-  /* Entry card (pinned) */
-  .entry-card {
-    background: linear-gradient(135deg, #13161e, #1a1e2a);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 2px 12px 12px 12px;
-    overflow: hidden;
-  }
-
-  .entry-header {
-    padding: 14px 16px 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .entry-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .entry-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-
-  .entry-grid {
-    padding: 12px 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-  }
-
-  .entry-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .entry-btn:hover {
-    border-color: var(--accent);
-    background: rgba(91,110,245,0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(91,110,245,0.2);
-  }
-
-  .entry-btn-icon { font-size: 18px; }
-
-  .entry-btn-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .entry-search {
-    padding: 0 16px 14px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .search-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .search-input::placeholder { color: var(--muted); }
-  .search-input:focus { border-color: var(--accent); }
-
-  .search-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .search-btn:hover {
-    background: var(--accent2);
-    transform: translateY(-1px);
-  }
-
-  /* Bottom input bar */
-  .input-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #1a1e2a;
-    border-top: 1px solid var(--border);
-    padding: 12px 16px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .input-inner {
-    width: 100%;
-    max-width: 680px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .chat-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .chat-input::placeholder { color: var(--muted); }
-  .chat-input:focus { border-color: var(--accent); }
-
-  .send-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 16px;
-  }
-
-  .send-btn:hover {
-    background: var(--accent2);
-    transform: scale(1.05);
-  }
-
-  /* Pinned badge */
-  .pinned-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    color: var(--muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 6px;
-    align-self: flex-start;
-  }
-
-  /* Section divider */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 8px 0 20px;
-    opacity: 0.4;
-  }
-
-  .divider-line { flex: 1; height: 1px; background: var(--border); }
-  .divider-text { font-size: 10px; color: var(--muted); }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --teams-bg: #f5f5f5;
+  --teams-sidebar: #f3f2f1;  
+  --teams-sidebar-active: #e8e6e3;
+  --teams-purple: #6264a7;
+  --teams-purple-dark: #484a7a;
+  --teams-purple-light: #e8e8f4;
+  --teams-white: #ffffff;
+  --teams-border: #e1dfdd;
+  --teams-text: #252424;
+  --teams-muted: #7a7574;
+  --teams-hover: #f3f2f1;
+  --teams-blue: #0078d4;
+  --red: #c50f1f;
+  --orange: #ca5010;
+  --green: #107c10;
+  --font: 'Segoe UI', -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--teams-bg);
+  color: var(--teams-text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* TOP BAR */
+.topbar {
+  height: 48px;
+  background: var(--teams-purple);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-logo svg { width:20px; height:20px; }
+
+.topbar-search {
+  flex: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 6px;
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  cursor: text;
+}
+
+.topbar-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ca5010, #c50f1f);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+/* MAIN LAYOUT */
+.app {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* LEFT RAIL */
+.rail {
+  width: 68px;
+  background: var(--teams-sidebar);
+  border-right: 1px solid var(--teams-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.rail-item {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--teams-muted);
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+
+.rail-item:hover { background: var(--teams-sidebar-active); color: var(--teams-text); }
+.rail-item.active { color: var(--teams-purple); }
+.rail-item.active::before {
+  content: '';
+  position: absolute;
+  left: -4px; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 24px;
+  background: var(--teams-purple);
+  border-radius: 0 2px 2px 0;
+}
+
+.rail-icon { font-size: 18px; line-height: 1; }
+.rail-label { font-size: 9px; font-weight: 600; }
+
+.rail-badge {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: var(--red);
+  color: white;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  min-width: 14px;
+  text-align: center;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: var(--teams-white);
+  border-right: 1px solid var(--teams-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--teams-border);
+}
+
+.sidebar-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teams-text);
+  margin-bottom: 8px;
+}
+
+.sidebar-search {
+  width: 100%;
+  background: var(--teams-hover);
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  height: 28px;
+  padding: 0 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--teams-text);
+  outline: none;
+}
+
+.sidebar-section {
+  padding: 8px 0;
+}
+
+.sidebar-section-title {
+  padding: 4px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teams-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar-item {
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: 0;
+  font-size: 13px;
+}
+
+.sidebar-item:hover { background: var(--teams-hover); }
+.sidebar-item.active { background: var(--teams-purple-light); color: var(--teams-purple-dark); font-weight: 600; }
+
+.chat-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+
+.bot-badge {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.sidebar-item-info { flex: 1; min-width: 0; }
+.sidebar-item-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-item-preview { font-size: 11px; color: var(--teams-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sidebar-unread {
+  background: var(--teams-purple);
+  color: white;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* CHAT AREA */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--teams-white);
+}
+
+/* CHAT HEADER */
+.chat-header {
+  height: 48px;
+  border-bottom: 1px solid var(--teams-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.chat-header-avatar {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.chat-header-info { flex: 1; }
+.chat-header-name { font-size: 14px; font-weight: 700; }
+.chat-header-sub { font-size: 11px; color: var(--teams-muted); }
+
+.chat-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.header-btn {
+  width: 32px; height: 32px;
+  border: none; background: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--teams-muted);
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
+}
+
+.header-btn:hover { background: var(--teams-hover); color: var(--teams-text); }
+
+/* MESSAGES */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.messages::-webkit-scrollbar { width: 6px; }
+.messages::-webkit-scrollbar-thumb { background: var(--teams-border); border-radius: 3px; }
+
+/* Date divider */
+.date-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  color: var(--teams-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.date-divider-line { flex: 1; height: 1px; background: var(--teams-border); }
+
+/* Message group */
+.msg-group {
+  display: flex;
+  gap: 10px;
+  padding: 2px 0;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.msg-group:hover { background: var(--teams-hover); }
+.msg-group.user-group { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.msg-bot-avatar {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.msg-content { flex: 1; min-width: 0; max-width: 85%; }
+.user-group .msg-content { display: flex; flex-direction: column; align-items: flex-end; }
+
+.msg-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.user-group .msg-meta { flex-direction: row-reverse; }
+
+.msg-sender { font-size: 13px; font-weight: 700; }
+.msg-time { font-size: 11px; color: var(--teams-muted); }
+
+/* User bubble */
+.user-bubble {
+  background: var(--teams-purple-light);
+  border-radius: 4px 4px 4px 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Bot card */
+.bot-card {
+  background: var(--teams-white);
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 560px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.card-accent { height: 3px; background: var(--teams-purple); }
+
+.card-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--teams-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-title { font-size: 14px; font-weight: 700; }
+.card-subtitle { font-size: 11px; color: var(--teams-muted); margin-top: 1px; }
+.card-ts { font-size: 10px; color: var(--teams-muted); text-align: right; white-space: nowrap; }
+
+.card-body { padding: 10px 14px; }
+
+/* Task items */
+.task-item {
+  padding: 7px 0;
+  border-bottom: 1px solid #f3f2f1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.task-item:last-child { border-bottom: none; }
+
+.task-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.task-dot.blocked { background: var(--red); }
+.task-dot.urgent { background: var(--orange); }
+.task-dot.active { background: var(--green); }
+.task-dot.normal { background: #8a8886; }
+
+.task-text { flex: 1; }
+.task-project { font-size: 11px; color: var(--teams-purple); font-weight: 600; }
+.task-name { font-size: 13px; color: var(--teams-text); line-height: 1.4; }
+.task-note { font-size: 11px; color: var(--teams-muted); margin-top: 1px; }
+
+.task-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.task-badge.blocked { background: #fde7e9; color: var(--red); }
+.task-badge.urgent { background: #fff4ce; color: var(--orange); }
+.task-badge.active { background: #dff6dd; color: var(--green); }
+
+.more-link {
+  font-size: 12px;
+  color: var(--teams-purple);
+  padding: 6px 0 2px;
+  cursor: pointer;
+  display: block;
+}
+
+.more-link:hover { text-decoration: underline; }
+
+/* Bot text reply */
+.bot-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--teams-text);
+  max-width: 560px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Card actions */
+.card-actions {
+  padding: 8px 14px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 1px solid var(--teams-border);
+  background: #faf9f8;
+}
+
+.card-btn {
+  background: var(--teams-white);
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teams-purple-dark);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.card-btn:hover { background: var(--teams-purple-light); border-color: var(--teams-purple); }
+
+/* Typing indicator */
+.typing-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 4px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.typing-wrap.show { opacity: 1; }
+
+.typing-bubble {
+  background: var(--teams-white);
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--teams-muted);
+}
+
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--teams-muted);
+  animation: bounce 1.2s infinite;
+  display: inline-block;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* PINNED CARD */
+.pinned-card {
+  background: var(--teams-white);
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 560px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.pinned-notice {
+  background: #f3f2f1;
+  border-bottom: 1px solid var(--teams-border);
+  padding: 4px 14px;
+  font-size: 10px;
+  color: var(--teams-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pinned-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--teams-border); }
+.pinned-title { font-size: 16px; font-weight: 700; }
+.pinned-sub { font-size: 12px; color: var(--teams-muted); margin-top: 2px; }
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  padding: 12px 14px 8px;
+}
+
+.quick-btn {
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  padding: 10px 6px;
+  background: var(--teams-white);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+  font-family: var(--font);
+}
+
+.quick-btn:hover {
+  border-color: var(--teams-purple);
+  background: var(--teams-purple-light);
+}
+
+.quick-btn-icon { font-size: 18px; }
+.quick-btn-label { font-size: 11px; font-weight: 600; color: var(--teams-text); line-height: 1.2; text-align: center; }
+
+.person-search-row {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+.person-input {
+  flex: 1;
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--teams-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.person-input:focus { border-color: var(--teams-purple); }
+.person-input::placeholder { color: var(--teams-muted); }
+
+.person-search-btn {
+  background: var(--teams-purple);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.person-search-btn:hover { background: var(--teams-purple-dark); }
+
+/* INPUT BAR */
+.input-bar {
+  border-top: 1px solid var(--teams-border);
+  background: var(--teams-white);
+  padding: 8px 16px 12px;
+  flex-shrink: 0;
+}
+
+.input-toolbar {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.toolbar-btn {
+  width: 28px; height: 28px;
+  border: none; background: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--teams-muted);
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
+}
+
+.toolbar-btn:hover { background: var(--teams-hover); color: var(--teams-text); }
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chat-textarea {
+  flex: 1;
+  border: 1px solid var(--teams-border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--teams-text);
+  outline: none;
+  resize: none;
+  min-height: 36px;
+  max-height: 120px;
+  line-height: 1.4;
+  transition: border-color 0.15s;
+}
+
+.chat-textarea:focus { border-color: var(--teams-purple); }
+.chat-textarea::placeholder { color: var(--teams-muted); }
+
+.send-btn {
+  width: 36px; height: 36px;
+  background: var(--teams-purple);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 16px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover { background: var(--teams-purple-dark); }
+.send-btn:disabled { background: var(--teams-border); cursor: not-allowed; }
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--teams-border);
+  border-top-color: var(--teams-purple);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.25s ease forwards; }
+
+/* Status dot */
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid white;
+  position: absolute;
+  bottom: -1px; right: -1px;
+}
+
+.relative { position: relative; }
 </style>
 </head>
 <body>
 
-<!-- Top bar -->
+<!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-logo">T</div>
-  <div class="topbar-title">YTLCC Bot</div>
-  <span class="topbar-sub">Chat with Flow bot</span>
-  <div class="topbar-dot"></div>
-  <span class="topbar-status">Connected</span>
+  <div class="topbar-logo">
+    <svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.4-1.4L11 14.2l7.6-7.6L20 8l-9 9z"/></svg>
+    <span style="color:white;font-size:13px;font-weight:700;">Microsoft Teams</span>
+  </div>
+  <div class="topbar-search">
+    <span style="font-size:12px;">🔍</span>
+    <span>Search or type a command</span>
+  </div>
+  <div class="topbar-avatar">BT</div>
 </div>
 
-<!-- Chat shell -->
-<div class="shell" id="chatShell">
+<!-- APP -->
+<div class="app">
 
-  <!-- Pinned entry card -->
-  <div class="msg" style="animation-delay:0.05s">
-    <div class="msg-meta">
-      <div class="bot-avatar">🤖</div>
-      <span class="msg-sender">YTLCC Bot</span>
-      <span class="msg-time">Pinned</span>
-      <span class="pinned-badge">📌 pinned</span>
+  <!-- LEFT RAIL -->
+  <div class="rail">
+    <div class="rail-item active">
+      <span class="rail-icon">💬</span>
+      <span class="rail-label">Chat</span>
     </div>
-    <div class="entry-card">
-      <div class="entry-header">
-        <div class="entry-title">Department Assistant</div>
-        <div class="entry-sub">Powered by ILMU · Notion Task Board</div>
-      </div>
-      <div class="entry-grid">
-        <div class="entry-btn" onclick="triggerQuery('NeedsAttention', 'needs attention')">
-          <span class="entry-btn-icon">🚨</span>
-          <span class="entry-btn-label">Needs Attention</span>
-        </div>
-        <div class="entry-btn" onclick="triggerQuery('DueSoon', 'due soon')">
-          <span class="entry-btn-icon">📅</span>
-          <span class="entry-btn-label">Due Soon</span>
-        </div>
-        <div class="entry-btn" onclick="triggerQuery('ProjectUpdate', 'project update')">
-          <span class="entry-btn-icon">📊</span>
-          <span class="entry-btn-label">Project Update</span>
-        </div>
-        <div class="entry-btn" onclick="triggerQuery('TeamUpdate', 'team update')">
-          <span class="entry-btn-icon">👥</span>
-          <span class="entry-btn-label">Team Update</span>
-        </div>
-        <div class="entry-btn" onclick="triggerQuery('Blocked', 'blocked tasks')">
-          <span class="entry-btn-icon">🚧</span>
-          <span class="entry-btn-label">Blocked</span>
-        </div>
-        <div class="entry-btn" onclick="triggerQuery('Summary', 'full summary')">
-          <span class="entry-btn-icon">📋</span>
-          <span class="entry-btn-label">Summary</span>
-        </div>
-      </div>
-      <div class="entry-search">
-        <input class="search-input" id="personSearch" placeholder="Search by person or project... e.g. Francis, LEAD 2026" />
-        <button class="search-btn" onclick="triggerByPerson()">Search</button>
-      </div>
+    <div class="rail-item">
+      <span class="rail-icon">👥</span>
+      <span class="rail-label">Teams</span>
+    </div>
+    <div class="rail-item" style="position:relative;">
+      <span class="rail-icon">📅</span>
+      <span class="rail-label">Calendar</span>
+    </div>
+    <div class="rail-item" style="position:relative;">
+      <span class="rail-icon">📁</span>
+      <span class="rail-label">Files</span>
+    </div>
+    <div class="rail-item">
+      <span class="rail-icon">···</span>
+      <span class="rail-label">More</span>
     </div>
   </div>
 
-  <div class="divider">
-    <div class="divider-line"></div>
-    <span class="divider-text">Today, 22 Apr 2026</span>
-    <div class="divider-line"></div>
-  </div>
-
-  <!-- Typing indicator -->
-  <div class="typing" id="typingIndicator">
-    <div class="bot-avatar">🤖</div>
-    <div class="typing-dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Chat</div>
+      <input class="sidebar-search" placeholder="🔍 Find a chat..." />
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">▾ Pinned</div>
+      <div class="sidebar-item active" onclick="selectChat('bot')">
+        <div class="bot-badge">🤖</div>
+        <div class="sidebar-item-info">
+          <div class="sidebar-item-name">YTLCC Bot</div>
+          <div class="sidebar-item-preview">Powered by ILMU · Notion</div>
+        </div>
+        <div class="sidebar-unread" id="unreadBadge" style="display:none">1</div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">▾ Recent</div>
+      <div class="sidebar-item" onclick="selectChat('ian')">
+        <div class="relative">
+          <div class="chat-avatar" style="background:linear-gradient(135deg,#ca5010,#c50f1f)">IC</div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="sidebar-item-info">
+          <div class="sidebar-item-name">Ian Chong</div>
+          <div class="sidebar-item-preview">Can you share the deck?</div>
+        </div>
+        <span style="font-size:10px;color:var(--teams-muted)">2h</span>
+      </div>
+      <div class="sidebar-item" onclick="selectChat('francis')">
+        <div class="relative">
+          <div class="chat-avatar" style="background:linear-gradient(135deg,#0078d4,#106ebe)">FR</div>
+          <div class="status-dot" style="background:#ca5010"></div>
+        </div>
+        <div class="sidebar-item-info">
+          <div class="sidebar-item-name">Francis</div>
+          <div class="sidebar-item-preview">LEAD run sheet updated</div>
+        </div>
+        <span style="font-size:10px;color:var(--teams-muted)">3h</span>
+      </div>
+      <div class="sidebar-item" onclick="selectChat('joelle')">
+        <div class="relative">
+          <div class="chat-avatar" style="background:linear-gradient(135deg,#107c10,#3a3)">JO</div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="sidebar-item-info">
+          <div class="sidebar-item-name">Joelle</div>
+          <div class="sidebar-item-preview">Still waiting on vendor...</div>
+        </div>
+        <span style="font-size:10px;color:var(--teams-muted)">Yesterday</span>
+      </div>
+      <div class="sidebar-item" onclick="selectChat('ytlcc')">
+        <div class="chat-avatar" style="background:linear-gradient(135deg,#6264a7,#484a7a);border-radius:4px;font-size:10px;">YTLCC</div>
+        <div class="sidebar-item-info">
+          <div class="sidebar-item-name">YTLCC General</div>
+          <div class="sidebar-item-preview">Eugene: strategy deck ready</div>
+        </div>
+        <span style="font-size:10px;color:var(--teams-muted)">Yesterday</span>
+      </div>
     </div>
   </div>
 
-  <!-- Messages injected here -->
-  <div id="messages"></div>
+  <!-- CHAT AREA -->
+  <div class="chat-area">
 
-</div>
+    <!-- CHAT HEADER -->
+    <div class="chat-header">
+      <div class="chat-header-avatar">🤖</div>
+      <div class="chat-header-info">
+        <div class="chat-header-name">YTLCC Bot</div>
+        <div class="chat-header-sub">Powered by ILMU · Notion Task Board · <span style="color:var(--green);">●</span> Connected</div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="header-btn" title="Video call">📹</button>
+        <button class="header-btn" title="Audio call">📞</button>
+        <button class="header-btn" title="Screen share">🖥</button>
+        <button class="header-btn" title="More options">⋯</button>
+      </div>
+    </div>
 
-<!-- Bottom input -->
-<div class="input-bar">
-  <div class="input-inner">
-    <input class="chat-input" id="chatInput" placeholder="Type a question or right-click a message → YTLCC Bot..." />
-    <button class="send-btn" onclick="handleChatSend()">➤</button>
-  </div>
-</div>
+    <!-- MESSAGES -->
+    <div class="messages" id="messages">
+
+      <div class="date-divider">
+        <div class="date-divider-line"></div>
+        <span>Today, 23 April 2026</span>
+        <div class="date-divider-line"></div>
+      </div>
+
+      <!-- Bot intro + pinned card -->
+      <div class="msg-group fade-in">
+        <div class="msg-bot-avatar">🤖</div>
+        <div class="msg-content">
+          <div class="msg-meta">
+            <span class="msg-sender">YTLCC Bot</span>
+            <span class="msg-time">9:00 AM</span>
+          </div>
+          <div class="pinned-card">
+            <div class="pinned-notice">📌 Pinned · YTLCC Department Assistant</div>
+            <div class="pinned-header">
+              <div class="pinned-title">Good morning, Bradley 👋</div>
+              <div class="pinned-sub">Ask me anything about your team's tasks and projects from Notion. I'm connected live.</div>
+            </div>
+            <div class="quick-grid">
+              <button class="quick-btn" onclick="quickQuery('needs attention')">
+                <span class="quick-btn-icon">🚨</span>
+                <span class="quick-btn-label">Needs Attention</span>
+              </button>
+              <button class="quick-btn" onclick="quickQuery('what is due soon')">
+                <span class="quick-btn-icon">📅</span>
+                <span class="quick-btn-label">Due Soon</span>
+              </button>
+              <button class="quick-btn" onclick="quickQuery('give me a project update')">
+                <span class="quick-btn-icon">📊</span>
+                <span class="quick-btn-label">Project Update</span>
+              </button>
+              <button class="quick-btn" onclick="quickQuery('who is working on what')">
+                <span class="quick-btn-icon">👥</span>
+                <span class="quick-btn-label">Team Update</span>
+              </button>
+              <button class="quick-btn" onclick="quickQuery('what tasks are blocked')">
+                <span class="quick-btn-icon">🚧</span>
+                <span class="quick-btn-label">Blocked</span>
+              </button>
+              <button class="quick-btn" onclick="quickQuery('give me a full summary of all tasks')">
+                <span class="quick-btn-icon">📋</span>
+                <span class="quick-btn-label">Summary</span>
+              </button>
+            </div>
+            <div class="person-search-row">
+              <input class="person-input" id="personInput" placeholder="Search by person — e.g. Francis, Joelle, Rachel..." />
+              <button class="person-search-btn" onclick="searchPerson()">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="msg-group typing-wrap" id="typingWrap">
+        <div class="msg-bot-avatar">🤖</div>
+        <div class="msg-content">
+          <div class="msg-meta">
+            <span class="msg-sender">YTLCC Bot</span>
+            <span class="msg-time" id="typingTime"></span>
+          </div>
+          <div class="typing-bubble">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span style="margin-left:4px;font-size:11px;" id="typingLabel">Querying Notion...</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /messages -->
+
+    <!-- INPUT BAR -->
+    <div class="input-bar">
+      <div class="input-toolbar">
+        <button class="toolbar-btn" title="Format">𝐁</button>
+        <button class="toolbar-btn" title="Attach">📎</button>
+        <button class="toolbar-btn" title="Emoji">😊</button>
+        <button class="toolbar-btn" title="GIF">GIF</button>
+        <button class="toolbar-btn" title="Sticker">🎨</button>
+        <button class="toolbar-btn" title="Loop">🔁</button>
+        <button class="toolbar-btn" title="More">⋯</button>
+      </div>
+      <div class="input-row">
+        <textarea class="chat-textarea" id="chatInput" rows="1" placeholder="Ask YTLCC Bot anything about your tasks..."></textarea>
+        <button class="send-btn" id="sendBtn" onclick="handleSend()">➤</button>
+      </div>
+    </div>
+
+  </div><!-- /chat-area -->
+
+</div><!-- /app -->
 
 <script>
-const now = () => {
-  const d = new Date();
-  return d.toLocaleTimeString('en-MY', { hour: '2-digit', minute: '2-digit', hour12: true }) + ' MYT';
-};
+// ─── CONFIG ───────────────────────────────────────────────
+const ILMU_KEY = 'sk-521fe780fa1c7231e4eff94bd9a56eea3199001a39475427';
+const ILMU_URL = 'https://corsproxy.io/?https://api.ilmu.ai/v1/chat/completions';
+const MODEL    = 'nemo-nano';
 
-const mockData = {
-  NeedsAttention: {
-    label: 'Needs Attention',
-    tasks: [
-      { project: 'Founders Day', name: 'Venue & Production Checklist', note: 'Chase vendor for availability — no response since Apr 6.', tag: 'blocked' },
-      { project: 'Audio Museum Tour', name: 'Script Writing', note: 'Waiting for Hwei to confirm scope before briefing copywriter.', tag: 'blocked' },
-      { project: 'Founders Day', name: 'RSVP Comms', note: 'Send final EDM blast by Apr 22.', tag: 'urgent' },
-      { project: 'LEAD 2026', name: 'Event Run Sheet', note: 'Finalise room layout and AV requirements with venue.', tag: 'urgent' },
-      { project: 'Social Media', name: 'Content & Marketing Strategy', note: 'Work with Elle to create first draft, then call internal meeting.', tag: 'ok' },
-    ],
-    more: 6
-  },
-  DueSoon: {
-    label: 'Due Soon',
-    tasks: [
-      { project: 'Founders Day', name: 'RSVP Comms — Final EDM Blast', note: 'Due: 22 Apr 2026', tag: 'urgent' },
-      { project: 'LEAD 2026', name: 'Run Sheet Finalisation', note: 'Due: 24 Apr 2026', tag: 'urgent' },
-      { project: 'BTRT 2026', name: 'Creative Brief Sign-off', note: 'Due: 25 Apr 2026', tag: 'ok' },
-      { project: 'Audio Museum Tour', name: 'Scope Confirmation', note: 'Due: 26 Apr 2026', tag: 'urgent' },
-    ],
-    more: 0
-  },
-  ProjectUpdate: {
-    label: 'Project Update',
-    tasks: [
-      { project: 'Founders Day', name: 'Overall Status', note: '3 tasks in progress, 2 blocked, 1 completed this week.', tag: 'urgent' },
-      { project: 'LEAD 2026', name: 'Overall Status', note: '2 tasks in progress, on track for May event.', tag: 'ok' },
-      { project: 'BTRT 2026', name: 'Overall Status', note: '1 task pending brief sign-off, rest not started.', tag: 'ok' },
-      { project: 'Audio Museum Tour', name: 'Overall Status', note: 'Blocked on scope — no movement since Apr 15.', tag: 'blocked' },
-      { project: 'Social Media', name: 'Overall Status', note: 'Strategy draft in progress with Elle.', tag: 'ok' },
-    ],
-    more: 2
-  },
-  TeamUpdate: {
-    label: 'Team Update',
-    tasks: [
-      { project: 'Assigned to Francis', name: 'LEAD 2026 — Run Sheet', note: 'In Progress · Due 24 Apr', tag: 'ok' },
-      { project: 'Assigned to Joelle', name: 'Founders Day — Venue Checklist', note: 'Blocked · Vendor unresponsive', tag: 'blocked' },
-      { project: 'Assigned to Eugene', name: 'Social Media — Strategy Draft', note: 'In Progress · With Elle', tag: 'ok' },
-      { project: 'Assigned to Rachel', name: 'BTRT 2026 — Creative Brief', note: 'Pending · Awaiting sign-off', tag: 'urgent' },
-      { project: 'Assigned to Mun Teng', name: 'Audio Museum Tour — Script', note: 'Blocked · Waiting for Hwei', tag: 'blocked' },
-    ],
-    more: 3
-  },
-  Blocked: {
-    label: 'Blocked Tasks',
-    tasks: [
-      { project: 'Founders Day', name: 'Venue & Production Checklist', note: 'Vendor has not responded. Awaiting availability confirmation since Apr 6.', tag: 'blocked' },
-      { project: 'Audio Museum Tour', name: 'Script Writing', note: 'Waiting for Hwei to confirm scope before briefing copywriter.', tag: 'blocked' },
-      { project: 'BTRT 2026', name: 'Artwork Production', note: 'Blocked pending creative brief sign-off from client.', tag: 'blocked' },
-    ],
-    more: 0
-  },
-  Summary: {
-    label: 'Department Summary',
-    tasks: [
-      { project: 'Overview', name: 'Total Active Tasks', note: '23 tasks across 6 projects.', tag: 'ok' },
-      { project: 'Overview', name: 'Blocked', note: '3 tasks blocked — Founders Day, Audio Museum Tour, BTRT.', tag: 'blocked' },
-      { project: 'Overview', name: 'Due This Week', note: '4 tasks due by Apr 26 — 2 urgent.', tag: 'urgent' },
-      { project: 'Overview', name: 'In Progress', note: '11 tasks actively being worked on.', tag: 'ok' },
-      { project: 'Overview', name: 'Not Started', note: '5 tasks not yet started — mostly BTRT 2026.', tag: 'ok' },
-    ],
-    more: 0
-  },
-  ByPerson: {
-    Francis: [
-      { project: 'LEAD 2026', name: 'Event Run Sheet', note: 'In Progress · Due 24 Apr', tag: 'urgent' },
-      { project: 'Founders Day', name: 'AV Coordination', note: 'In Progress · Coordinating with venue', tag: 'ok' },
-    ],
-    Joelle: [
-      { project: 'Founders Day', name: 'Venue & Production Checklist', note: 'Blocked · Vendor unresponsive since Apr 6', tag: 'blocked' },
-      { project: 'Social Media', name: 'Content Calendar', note: 'In Progress · Draft due Apr 25', tag: 'ok' },
-    ],
-    Eugene: [
-      { project: 'Social Media', name: 'Content & Marketing Strategy', note: 'In Progress · Working with Elle', tag: 'ok' },
-    ],
-    Rachel: [
-      { project: 'BTRT 2026', name: 'Creative Brief', note: 'Pending client sign-off', tag: 'urgent' },
-      { project: 'Journey', name: 'Design Assets', note: 'Not started · Waiting for brief', tag: 'ok' },
-    ],
-    'Mun Teng': [
-      { project: 'Audio Museum Tour', name: 'Script Writing', note: 'Blocked · Waiting for Hwei on scope', tag: 'blocked' },
-    ],
-  }
-};
+// ─── REAL NOTION DATA (fetched live by Claude) ────────────
+const NOTION_CONTEXT = `YTLCC Department Task Board — Dashboard YTLCC x Projects 2026
+Retrieved: 23 April 2026
 
-const tagMap = {
-  blocked: { label: 'BLOCKED', cls: 'tag-blocked' },
-  urgent: { label: 'URGENT', cls: 'tag-urgent' },
-  ok: { label: 'ACTIVE', cls: 'tag-ok' },
-};
+TASK: Confirm venue and production checklist
+Project: Founders' Day (Placeholder) | Team: Production
+Status: Blocker | Priority: High
+Due Date: 2026-04-06 (OVERDUE)
+Blocker: Vendor availability
+Next Action: Lock vendor + confirm setup schedule
+Remarks: Waiting for vendor confirmation
+Company: YTL Construction
 
-function buildCard(label, tasks, more, queryLabel) {
-  const rows = tasks.map(t => `
-    <div class="task-row">
-      <span class="task-dash">—</span>
-      <div class="task-content">
-        <div><span class="task-project">${t.project}</span> <span class="task-name">· ${t.name}</span></div>
-        <div class="task-note">${t.note}</div>
-      </div>
-      <span class="tag ${tagMap[t.tag].cls}">${tagMap[t.tag].label}</span>
-    </div>
-  `).join('');
+TASK: Audio Tour (Placeholder)
+Project: Audio Museum Tour | Team: Digital
+Status: Not Started | Priority: Medium
+Due Date: Not set
+Blocker: None
+Next Action: Confirm scope (stops, languages) + required deliverables; set due date; assign PICs.
+Remarks: Placeholder row created for tracking. Update once brief is available.
+Task Brief: TBD — Add tour stops/flow, script tone, languages, audio format/specs, talent/VO needs, and delivery platform (QR/app/device).
+Deliverables: Copy, Design, Website
+Channels: Website, Event on-site / screens
+Company: YTL Developments
 
-  const moreRow = more > 0 ? `<div class="more-tasks" onclick="showMore(this, '${label}')">+ ${more} more — tap to show all</div>` : '';
+TASK: Build landing page wireframe
+Project: BTRT Website Improvement (Placeholder) | Team: Digital
+Status: In Progress | Priority: Medium
+Due Date: 2026-04-25
+Blocker: None
+Next Action: Review wireframe with stakeholders
 
-  return `
-    <div class="bot-card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">🤖 YTLCC Bot</div>
-          <div class="card-subtitle">Notion Task Board · ${label}</div>
-        </div>
-        <div class="card-timestamp">${now()}</div>
-      </div>
-      <div class="card-body">
-        ${rows}
-        ${moreRow}
-      </div>
-      <div class="card-actions">
-        <button class="action-btn" onclick="triggerQuery('Blocked','blocked tasks')">🚧 Blocked</button>
-        <button class="action-btn" onclick="triggerQuery('DueSoon','due soon')">📅 Due Soon</button>
-        <button class="action-btn" onclick="triggerQuery('Summary','full summary')">📋 Summary</button>
-        <button class="action-btn" onclick="triggerQuery('TeamUpdate','team update')">👥 Team</button>
-      </div>
-    </div>
-  `;
+TASK: Draft key visual direction
+Project: Founders' Day (Placeholder) | Team: Design
+Status: In Progress | Priority: High
+Due Date: 2026-04-22 (OVERDUE)
+Blocker: None
+Next Action: Present to Ian for sign-off
+
+TASK: Finalize event messaging pillars
+Project: LEAD 2026 | Team: Brand
+Status: In Progress | Priority: High
+Due Date: 2026-04-28
+Blocker: None
+Next Action: Align with comms team before deck submission
+
+TASK: Align brand narrative for campaign deck
+Project: LEAD 2026 | Team: Brand
+Status: Not Started | Priority: Medium
+Due Date: 2026-05-05
+Blocker: None
+Next Action: Brief the team once messaging pillars are approved
+
+TASK: BTRT Website
+Project: BTRT Website Improvement (Placeholder) | Team: Digital
+Status: In Progress | Priority: High
+Due Date: 2026-04-30
+Blocker: None
+Next Action: Adding Events Page and reviewing content structure
+Remarks: Content review ongoing
+
+TASK: Website Update
+Project: Others | Team: Digital
+Status: In Progress | Priority: Medium
+Due Date: 2026-05-10
+Blocker: None
+Next Action: Coordinate with IT on hosting
+
+Team members known to work on tasks: Francis (LEAD 2026), Joelle (Founders Day production), Eugene (Digital/Social), Rachel (BTRT), Mun Teng (Audio Museum Tour)
+Projects active: Audio Museum Tour, BTRT Website Improvement, Founders Day, LEAD 2026, Others
+Sub-teams: Brand, Design, Comms, Digital, Production
+`;
+
+// ─── SYSTEM PROMPT ────────────────────────────────────────
+const SYSTEM = `You are YTLCC Bot, a friendly and smart department assistant for YTLCC (YTL Creative Communications), a creative communications team. You have access to the team's live Notion task board data.
+
+Your job is to help the team understand what's going on with their projects and tasks — answer naturally, like a helpful colleague, not a robot.
+
+RULES:
+- Reply conversationally and clearly. You can use plain text with line breaks.
+- For task lists, format each as: • Project — Task: brief note
+- Always surface BLOCKED or OVERDUE tasks first if relevant
+- Be concise but complete. Don't pad responses.
+- You can answer general questions too, not just task queries.
+- If asked about a person, look through the task data for their name.
+- Today's date is 23 April 2026.
+- Sign off responses with nothing — just end naturally.
+
+Here is the live Notion task board data:
+
+${NOTION_CONTEXT}`;
+
+// ─── CONVERSATION HISTORY ─────────────────────────────────
+let history = [];
+let isLoading = false;
+
+// ─── UTILS ───────────────────────────────────────────────
+function nowTime() {
+  return new Date().toLocaleTimeString('en-MY', { hour:'2-digit', minute:'2-digit', hour12:true });
 }
 
-function addUserMessage(text) {
+function scrollBottom() {
+  const m = document.getElementById('messages');
+  setTimeout(() => m.scrollTo({ top: m.scrollHeight, behavior: 'smooth' }), 50);
+}
+
+// ─── UI: ADD USER MESSAGE ─────────────────────────────────
+function addUserMsg(text) {
   const msgs = document.getElementById('messages');
+  const typingWrap = document.getElementById('typingWrap');
   const div = document.createElement('div');
-  div.className = 'msg user-msg';
-  div.style.animationDelay = '0s';
+  div.className = 'msg-group user-group fade-in';
   div.innerHTML = `
-    <div class="msg-meta" style="justify-content:flex-end">
-      <span class="msg-time">${now()}</span>
-      <span class="msg-sender">Bradley</span>
-      <div class="user-avatar">BT</div>
+    <div class="relative">
+      <div class="msg-avatar" style="background:linear-gradient(135deg,#ca5010,#c50f1f)">BT</div>
     </div>
-    <div style="display:flex;justify-content:flex-end">
+    <div class="msg-content">
+      <div class="msg-meta">
+        <span class="msg-sender">Bradley Tan</span>
+        <span class="msg-time">${nowTime()}</span>
+      </div>
       <div class="user-bubble">${text}</div>
-    </div>
-  `;
-  msgs.appendChild(div);
-  scrollDown();
+    </div>`;
+  msgs.insertBefore(div, typingWrap);
+  scrollBottom();
 }
 
-function addBotCard(label, tasks, more) {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg';
-  div.style.animationDelay = '0s';
-  div.innerHTML = `
-    <div class="msg-meta">
-      <div class="bot-avatar">🤖</div>
-      <span class="msg-sender">YTLCC Bot</span>
-      <span class="msg-time">${now()}</span>
-    </div>
-    ${buildCard(label, tasks, more, label)}
-  `;
-  msgs.appendChild(div);
-  scrollDown();
-}
-
-function showTyping() {
-  document.getElementById('typingIndicator').classList.add('visible');
-  scrollDown();
+// ─── UI: SHOW/HIDE TYPING ─────────────────────────────────
+function showTyping(label = 'Querying Notion...') {
+  document.getElementById('typingLabel').textContent = label;
+  document.getElementById('typingTime').textContent = nowTime();
+  document.getElementById('typingWrap').classList.add('show');
+  scrollBottom();
 }
 
 function hideTyping() {
-  document.getElementById('typingIndicator').classList.remove('visible');
+  document.getElementById('typingWrap').classList.remove('show');
 }
 
-function scrollDown() {
-  setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50);
-}
-
-function triggerQuery(type, label) {
-  addUserMessage(label);
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    const d = mockData[type];
-    addBotCard(d.label, d.tasks, d.more);
-  }, 1400);
-}
-
-function triggerByPerson() {
-  const val = document.getElementById('personSearch').value.trim();
-  if (!val) return;
-  const key = Object.keys(mockData.ByPerson).find(k => k.toLowerCase().includes(val.toLowerCase()));
-  addUserMessage(`Show tasks for: ${val}`);
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    if (key) {
-      addBotCard(`Tasks · ${key}`, mockData.ByPerson[key], 0);
-    } else {
-      const msgs = document.getElementById('messages');
-      const div = document.createElement('div');
-      div.className = 'msg';
-      div.style.animationDelay = '0s';
-      div.innerHTML = `
-        <div class="msg-meta">
-          <div class="bot-avatar">🤖</div>
-          <span class="msg-sender">YTLCC Bot</span>
-          <span class="msg-time">${now()}</span>
-        </div>
-        <div class="bot-card">
-          <div class="card-body" style="padding:16px">
-            <div style="color:var(--muted);font-size:12px">No tasks found for <strong style="color:var(--text)">${val}</strong>. Try: Francis, Joelle, Eugene, Rachel, Mun Teng.</div>
-          </div>
-        </div>
-      `;
-      msgs.appendChild(div);
-      scrollDown();
-    }
-    document.getElementById('personSearch').value = '';
-  }, 1200);
-}
-
-function showMore(el, label) {
-  el.style.color = 'var(--accent2)';
-  el.textContent = 'Loading all tasks...';
-  setTimeout(() => {
-    el.parentElement.innerHTML += mockData.NeedsAttention.tasks.slice(0, 3).map(t => `
-      <div class="task-row" style="animation:fadeUp 0.3s ease forwards;opacity:0">
-        <span class="task-dash">—</span>
-        <div class="task-content">
-          <div><span class="task-project">${t.project}</span> <span class="task-name">· ${t.name}</span></div>
-          <div class="task-note">${t.note}</div>
-        </div>
-        <span class="tag ${tagMap[t.tag].cls}">${tagMap[t.tag].label}</span>
+// ─── UI: ADD BOT RESPONSE ─────────────────────────────────
+function addBotMsg(text) {
+  const msgs = document.getElementById('messages');
+  const typingWrap = document.getElementById('typingWrap');
+  const div = document.createElement('div');
+  div.className = 'msg-group fade-in';
+  div.innerHTML = `
+    <div class="msg-bot-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="msg-meta">
+        <span class="msg-sender">YTLCC Bot</span>
+        <span class="msg-time">${nowTime()}</span>
       </div>
-    `).join('');
-    el.remove();
-  }, 600);
+      <div class="bot-card">
+        <div class="card-accent"></div>
+        <div class="card-body" style="padding:12px 14px">
+          <div class="bot-text">${text}</div>
+        </div>
+        <div class="card-actions">
+          <button class="card-btn" onclick="quickQuery('what needs attention')">🚨 Needs Attention</button>
+          <button class="card-btn" onclick="quickQuery('what is blocked')">🚧 Blocked</button>
+          <button class="card-btn" onclick="quickQuery('what is due soon')">📅 Due Soon</button>
+          <button class="card-btn" onclick="quickQuery('full summary')">📋 Summary</button>
+        </div>
+      </div>
+    </div>`;
+  msgs.insertBefore(div, typingWrap);
+  scrollBottom();
 }
 
-function handleChatSend() {
-  const input = document.getElementById('chatInput');
-  const val = input.value.trim();
-  if (!val) return;
-  input.value = '';
+function addErrorMsg(err) {
+  const msgs = document.getElementById('messages');
+  const typingWrap = document.getElementById('typingWrap');
+  const div = document.createElement('div');
+  div.className = 'msg-group fade-in';
+  div.innerHTML = `
+    <div class="msg-bot-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="msg-meta">
+        <span class="msg-sender">YTLCC Bot</span>
+        <span class="msg-time">${nowTime()}</span>
+      </div>
+      <div class="bot-text" style="color:var(--red);font-size:13px;">⚠️ ${err}</div>
+    </div>`;
+  msgs.insertBefore(div, typingWrap);
+  scrollBottom();
+}
 
-  const lower = val.toLowerCase();
-  let type = 'NeedsAttention';
-  if (lower.includes('block')) type = 'Blocked';
-  else if (lower.includes('due') || lower.includes('soon')) type = 'DueSoon';
-  else if (lower.includes('summary') || lower.includes('overview')) type = 'Summary';
-  else if (lower.includes('team') || lower.includes('who')) type = 'TeamUpdate';
-  else if (lower.includes('project')) type = 'ProjectUpdate';
-  else if (['francis','joelle','eugene','rachel','mun teng'].some(n => lower.includes(n))) {
-    const name = ['Francis','Joelle','Eugene','Rachel','Mun Teng'].find(n => lower.includes(n.toLowerCase()));
-    document.getElementById('personSearch').value = name;
-    triggerByPerson();
-    return;
+// ─── CALL ILMU API ────────────────────────────────────────
+async function callILMU(userMessage) {
+  history.push({ role: 'user', content: userMessage });
+
+  const payload = {
+    model: MODEL,
+    max_tokens: 600,
+    messages: [
+      { role: 'system', content: SYSTEM },
+      ...history
+    ]
+  };
+
+  const res = await fetch(ILMU_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${ILMU_KEY}`
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`ILMU API error ${res.status}: ${err}`);
   }
 
-  addUserMessage(val);
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    const d = mockData[type];
-    addBotCard(d.label, d.tasks, d.more);
-  }, 1400);
+  const data = await res.json();
+  const reply = data?.choices?.[0]?.message?.content;
+
+  if (!reply) throw new Error('No response from ILMU. Try again.');
+
+  history.push({ role: 'assistant', content: reply });
+
+  // Keep history manageable (last 10 turns)
+  if (history.length > 20) history = history.slice(-20);
+
+  return reply;
 }
 
-document.getElementById('chatInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleChatSend();
+// ─── MAIN SEND FLOW ───────────────────────────────────────
+async function send(message) {
+  if (!message.trim() || isLoading) return;
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addUserMsg(message);
+  showTyping('Thinking...');
+
+  try {
+    const reply = await callILMU(message);
+    hideTyping();
+    addBotMsg(reply);
+  } catch (e) {
+    hideTyping();
+    addErrorMsg(e.message || 'Something went wrong. Please try again.');
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function handleSend() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  input.style.height = 'auto';
+  send(msg);
+}
+
+function quickQuery(q) {
+  send(q);
+}
+
+function searchPerson() {
+  const val = document.getElementById('personInput').value.trim();
+  if (!val) return;
+  document.getElementById('personInput').value = '';
+  send(`What is ${val} currently working on?`);
+}
+
+// ─── AUTO-RESIZE TEXTAREA ─────────────────────────────────
+document.getElementById('chatInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 
-document.getElementById('personSearch').addEventListener('keydown', e => {
-  if (e.key === 'Enter') triggerByPerson();
+document.getElementById('chatInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
 });
+
+document.getElementById('personInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') searchPerson();
+});
+
+function selectChat(who) {
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
 </script>
 </body>
 </html>
