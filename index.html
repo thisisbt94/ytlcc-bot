@@ -3,1238 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YTLCC Bot — Teams</title>
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+<title>ILMU Bot – Background</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-
-:root {
-  --teams-bg: #f5f5f5;
-  --teams-sidebar: #f3f2f1;  
-  --teams-sidebar-active: #e8e6e3;
-  --teams-purple: #6264a7;
-  --teams-purple-dark: #484a7a;
-  --teams-purple-light: #e8e8f4;
-  --teams-white: #ffffff;
-  --teams-border: #e1dfdd;
-  --teams-text: #252424;
-  --teams-muted: #7a7574;
-  --teams-hover: #f3f2f1;
-  --teams-blue: #0078d4;
-  --red: #c50f1f;
-  --orange: #ca5010;
-  --green: #107c10;
-  --font: 'Segoe UI', -apple-system, sans-serif;
-}
-
-body {
-  font-family: var(--font);
-  background: var(--teams-bg);
-  color: var(--teams-text);
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* TOP BAR */
-.topbar {
-  height: 48px;
-  background: var(--teams-purple);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 12px;
-  flex-shrink: 0;
-  user-select: none;
-}
-
-.topbar-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.topbar-logo svg { width:20px; height:20px; }
-
-.topbar-search {
-  flex: 1;
-  max-width: 480px;
-  margin: 0 auto;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 4px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 6px;
-  color: rgba(255,255,255,0.7);
-  font-size: 12px;
-  cursor: text;
-}
-
-.topbar-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ca5010, #c50f1f);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: white;
-  margin-left: auto;
-  cursor: pointer;
-}
-
-/* MAIN LAYOUT */
-.app {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* LEFT RAIL */
-.rail {
-  width: 68px;
-  background: var(--teams-sidebar);
-  border-right: 1px solid var(--teams-border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 0;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.rail-item {
-  width: 52px;
-  height: 52px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  cursor: pointer;
-  color: var(--teams-muted);
-  transition: background 0.15s, color 0.15s;
-  position: relative;
-}
-
-.rail-item:hover { background: var(--teams-sidebar-active); color: var(--teams-text); }
-.rail-item.active { color: var(--teams-purple); }
-.rail-item.active::before {
-  content: '';
-  position: absolute;
-  left: -4px; top: 50%;
-  transform: translateY(-50%);
-  width: 3px; height: 24px;
-  background: var(--teams-purple);
-  border-radius: 0 2px 2px 0;
-}
-
-.rail-icon { font-size: 18px; line-height: 1; }
-.rail-label { font-size: 9px; font-weight: 600; }
-
-.rail-badge {
-  position: absolute;
-  top: 6px; right: 6px;
-  background: var(--red);
-  color: white;
-  border-radius: 8px;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 1px 4px;
-  min-width: 14px;
-  text-align: center;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 260px;
-  background: var(--teams-white);
-  border-right: 1px solid var(--teams-border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-.sidebar-header {
-  padding: 12px 16px 8px;
-  border-bottom: 1px solid var(--teams-border);
-}
-
-.sidebar-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--teams-text);
-  margin-bottom: 8px;
-}
-
-.sidebar-search {
-  width: 100%;
-  background: var(--teams-hover);
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  height: 28px;
-  padding: 0 10px;
-  font-family: var(--font);
-  font-size: 12px;
-  color: var(--teams-text);
-  outline: none;
-}
-
-.sidebar-section {
-  padding: 8px 0;
-}
-
-.sidebar-section-title {
-  padding: 4px 16px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--teams-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.sidebar-item {
-  padding: 6px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: background 0.1s;
-  border-radius: 0;
-  font-size: 13px;
-}
-
-.sidebar-item:hover { background: var(--teams-hover); }
-.sidebar-item.active { background: var(--teams-purple-light); color: var(--teams-purple-dark); font-weight: 600; }
-
-.chat-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: white;
-  flex-shrink: 0;
-}
-
-.bot-badge {
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.sidebar-item-info { flex: 1; min-width: 0; }
-.sidebar-item-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-item-preview { font-size: 11px; color: var(--teams-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.sidebar-unread {
-  background: var(--teams-purple);
-  color: white;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 5px;
-  min-width: 16px;
-  text-align: center;
-}
-
-/* CHAT AREA */
-.chat-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--teams-white);
-}
-
-/* CHAT HEADER */
-.chat-header {
-  height: 48px;
-  border-bottom: 1px solid var(--teams-border);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.chat-header-avatar {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-}
-
-.chat-header-info { flex: 1; }
-.chat-header-name { font-size: 14px; font-weight: 700; }
-.chat-header-sub { font-size: 11px; color: var(--teams-muted); }
-
-.chat-header-actions {
-  display: flex;
-  gap: 4px;
-}
-
-.header-btn {
-  width: 32px; height: 32px;
-  border: none; background: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--teams-muted);
-  font-size: 15px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.1s;
-}
-
-.header-btn:hover { background: var(--teams-hover); color: var(--teams-text); }
-
-/* MESSAGES */
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 16px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.messages::-webkit-scrollbar { width: 6px; }
-.messages::-webkit-scrollbar-thumb { background: var(--teams-border); border-radius: 3px; }
-
-/* Date divider */
-.date-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 12px 0;
-  color: var(--teams-muted);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.date-divider-line { flex: 1; height: 1px; background: var(--teams-border); }
-
-/* Message group */
-.msg-group {
-  display: flex;
-  gap: 10px;
-  padding: 2px 0;
-  border-radius: 4px;
-  transition: background 0.1s;
-}
-
-.msg-group:hover { background: var(--teams-hover); }
-.msg-group.user-group { flex-direction: row-reverse; }
-
-.msg-avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: white;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.msg-bot-avatar {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, var(--teams-purple), #484a7a);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.msg-content { flex: 1; min-width: 0; max-width: 85%; }
-.user-group .msg-content { display: flex; flex-direction: column; align-items: flex-end; }
-
-.msg-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.user-group .msg-meta { flex-direction: row-reverse; }
-
-.msg-sender { font-size: 13px; font-weight: 700; }
-.msg-time { font-size: 11px; color: var(--teams-muted); }
-
-/* User bubble */
-.user-bubble {
-  background: var(--teams-purple-light);
-  border-radius: 4px 4px 4px 4px;
-  padding: 8px 12px;
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 100%;
-  word-wrap: break-word;
-}
-
-/* Bot card */
-.bot-card {
-  background: var(--teams-white);
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  overflow: hidden;
-  max-width: 560px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.card-accent { height: 3px; background: var(--teams-purple); }
-
-.card-header {
-  padding: 10px 14px 8px;
-  border-bottom: 1px solid var(--teams-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.card-title { font-size: 14px; font-weight: 700; }
-.card-subtitle { font-size: 11px; color: var(--teams-muted); margin-top: 1px; }
-.card-ts { font-size: 10px; color: var(--teams-muted); text-align: right; white-space: nowrap; }
-
-.card-body { padding: 10px 14px; }
-
-/* Task items */
-.task-item {
-  padding: 7px 0;
-  border-bottom: 1px solid #f3f2f1;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.task-item:last-child { border-bottom: none; }
-
-.task-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 5px;
-}
-
-.task-dot.blocked { background: var(--red); }
-.task-dot.urgent { background: var(--orange); }
-.task-dot.active { background: var(--green); }
-.task-dot.normal { background: #8a8886; }
-
-.task-text { flex: 1; }
-.task-project { font-size: 11px; color: var(--teams-purple); font-weight: 600; }
-.task-name { font-size: 13px; color: var(--teams-text); line-height: 1.4; }
-.task-note { font-size: 11px; color: var(--teams-muted); margin-top: 1px; }
-
-.task-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 3px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.task-badge.blocked { background: #fde7e9; color: var(--red); }
-.task-badge.urgent { background: #fff4ce; color: var(--orange); }
-.task-badge.active { background: #dff6dd; color: var(--green); }
-
-.more-link {
-  font-size: 12px;
-  color: var(--teams-purple);
-  padding: 6px 0 2px;
-  cursor: pointer;
-  display: block;
-}
-
-.more-link:hover { text-decoration: underline; }
-
-/* Bot text reply */
-.bot-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--teams-text);
-  max-width: 560px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-/* Card actions */
-.card-actions {
-  padding: 8px 14px 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  border-top: 1px solid var(--teams-border);
-  background: #faf9f8;
-}
-
-.card-btn {
-  background: var(--teams-white);
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--teams-purple-dark);
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.card-btn:hover { background: var(--teams-purple-light); border-color: var(--teams-purple); }
-
-/* Typing indicator */
-.typing-wrap {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 4px 0;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-}
-
-.typing-wrap.show { opacity: 1; }
-
-.typing-bubble {
-  background: var(--teams-white);
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  padding: 8px 14px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--teams-muted);
-}
-
-.dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--teams-muted);
-  animation: bounce 1.2s infinite;
-  display: inline-block;
-}
-
-.dot:nth-child(2) { animation-delay: 0.2s; }
-.dot:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes bounce {
-  0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-4px); opacity: 1; }
-}
-
-/* PINNED CARD */
-.pinned-card {
-  background: var(--teams-white);
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  overflow: hidden;
-  max-width: 560px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.pinned-notice {
-  background: #f3f2f1;
-  border-bottom: 1px solid var(--teams-border);
-  padding: 4px 14px;
-  font-size: 10px;
-  color: var(--teams-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.pinned-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--teams-border); }
-.pinned-title { font-size: 16px; font-weight: 700; }
-.pinned-sub { font-size: 12px; color: var(--teams-muted); margin-top: 2px; }
-
-.quick-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
-  padding: 12px 14px 8px;
-}
-
-.quick-btn {
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  padding: 10px 6px;
-  background: var(--teams-white);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.15s;
-  font-family: var(--font);
-}
-
-.quick-btn:hover {
-  border-color: var(--teams-purple);
-  background: var(--teams-purple-light);
-}
-
-.quick-btn-icon { font-size: 18px; }
-.quick-btn-label { font-size: 11px; font-weight: 600; color: var(--teams-text); line-height: 1.2; text-align: center; }
-
-.person-search-row {
-  display: flex;
-  gap: 8px;
-  padding: 0 14px 14px;
-}
-
-.person-input {
-  flex: 1;
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-family: var(--font);
-  font-size: 12px;
-  color: var(--teams-text);
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-.person-input:focus { border-color: var(--teams-purple); }
-.person-input::placeholder { color: var(--teams-muted); }
-
-.person-search-btn {
-  background: var(--teams-purple);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 14px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.person-search-btn:hover { background: var(--teams-purple-dark); }
-
-/* INPUT BAR */
-.input-bar {
-  border-top: 1px solid var(--teams-border);
-  background: var(--teams-white);
-  padding: 8px 16px 12px;
-  flex-shrink: 0;
-}
-
-.input-toolbar {
-  display: flex;
-  gap: 2px;
-  margin-bottom: 6px;
-}
-
-.toolbar-btn {
-  width: 28px; height: 28px;
-  border: none; background: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--teams-muted);
-  font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.1s;
-}
-
-.toolbar-btn:hover { background: var(--teams-hover); color: var(--teams-text); }
-
-.input-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-}
-
-.chat-textarea {
-  flex: 1;
-  border: 1px solid var(--teams-border);
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-family: var(--font);
-  font-size: 14px;
-  color: var(--teams-text);
-  outline: none;
-  resize: none;
-  min-height: 36px;
-  max-height: 120px;
-  line-height: 1.4;
-  transition: border-color 0.15s;
-}
-
-.chat-textarea:focus { border-color: var(--teams-purple); }
-.chat-textarea::placeholder { color: var(--teams-muted); }
-
-.send-btn {
-  width: 36px; height: 36px;
-  background: var(--teams-purple);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: white;
-  font-size: 16px;
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-
-.send-btn:hover { background: var(--teams-purple-dark); }
-.send-btn:disabled { background: var(--teams-border); cursor: not-allowed; }
-
-/* Loading spinner */
-.spinner {
-  display: inline-block;
-  width: 14px; height: 14px;
-  border: 2px solid var(--teams-border);
-  border-top-color: var(--teams-purple);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Fade in */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in { animation: fadeIn 0.25s ease forwards; }
-
-/* Status dot */
-.status-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  border: 2px solid white;
-  position: absolute;
-  bottom: -1px; right: -1px;
-}
-
-.relative { position: relative; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: 'Space Grotesk', sans-serif; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px #4DFFA0; }
+    50%       { opacity: 0.4; box-shadow: 0 0 2px #4DFFA0; }
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  .ring {
+    position: absolute; border-radius: 50%; border: 1px solid;
+    animation: spin linear infinite;
+  }
+  .status-dot {
+    display: inline-block; border-radius: 50%; background: #4DFFA0;
+    animation: pulse-dot 2s ease-in-out infinite;
+    vertical-align: middle; margin-right: 5px;
+  }
+  .corner { position: absolute; }
+  .corner.tl { top:0; left:0;  border-top:  1.5px solid rgba(80,200,255,0.55); border-left:  1.5px solid rgba(80,200,255,0.55); }
+  .corner.tr { top:0; right:0; border-top:  1.5px solid rgba(80,200,255,0.55); border-right: 1.5px solid rgba(80,200,255,0.55); }
+  .corner.bl { bottom:0; left:0;  border-bottom: 1.5px solid rgba(80,200,255,0.55); border-left:  1.5px solid rgba(80,200,255,0.55); }
+  .corner.br { bottom:0; right:0; border-bottom: 1.5px solid rgba(80,200,255,0.55); border-right: 1.5px solid rgba(80,200,255,0.55); }
+
+  /* Tweaks panel */
+  .tp {
+    position: fixed; bottom: 72px; right: 12px; z-index: 9999;
+    background: rgba(6,10,26,0.93); border: 1px solid rgba(80,200,255,0.22);
+    backdrop-filter: blur(16px); width: 232px;
+    animation: fadeIn 0.18s ease;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+  }
+  .tp-head {
+    padding: 11px 14px; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(120,200,255,0.8); border-bottom: 1px solid rgba(80,200,255,0.12);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tp-x { background:none; border:none; cursor:pointer; color:rgba(120,200,255,0.7); font-size:13px; }
+  .tp-x:hover { color:#fff; }
+  .tp-sec { padding: 9px 14px 3px; font-size: 9px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(80,200,255,0.38); font-weight:500; }
+  .tp-row { padding: 5px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .tp-lbl { font-size: 11px; color: rgba(200,230,255,0.7); flex:1; }
+  .tp-col { width:26px; height:18px; border-radius:3px; border:1px solid rgba(80,200,255,0.3); cursor:pointer; }
+  .tp-sel {
+    background: rgba(80,200,255,0.07); border: 1px solid rgba(80,200,255,0.18);
+    color: rgba(200,230,255,0.8); font-size:10px; padding:3px 5px;
+    font-family:'Space Grotesk',sans-serif; cursor:pointer; flex:1; max-width:115px;
+  }
+  .tp-rng { flex:1; accent-color:#50C8FF; }
+  .tp-tog {
+    width:30px; height:17px; border-radius:9px; border:none; cursor:pointer;
+    position:relative; transition:background 0.2s; flex-shrink:0;
+  }
+  .tp-tog-t {
+    position:absolute; top:2px; width:13px; height:13px;
+    border-radius:50%; background:#fff; transition:left 0.2s;
+  }
+
+  .dl-btn {
+    position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+    background: rgba(80,200,255,0.1); border: 1px solid rgba(80,200,255,0.32);
+    color: rgba(200,240,255,0.88); font-family:'Space Mono',monospace;
+    font-size: 10px; letter-spacing:0.14em; text-transform:uppercase;
+    padding: 8px 16px; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.2s;
+  }
+  .dl-btn:hover { background:rgba(80,200,255,0.22); border-color:rgba(80,200,255,0.7); box-shadow:0 0 18px rgba(80,200,255,0.22); }
 </style>
 </head>
 <body>
+<div id="root"></div>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="topbar-logo">
-    <svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4C2.9 3 2 3.9 2 5v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.4-1.4L11 14.2l7.6-7.6L20 8l-9 9z"/></svg>
-    <span style="color:white;font-size:13px;font-weight:700;">Microsoft Teams</span>
-  </div>
-  <div class="topbar-search">
-    <span style="font-size:12px;">🔍</span>
-    <span>Search or type a command</span>
-  </div>
-  <div class="topbar-avatar">BT</div>
-</div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
 
-<!-- APP -->
-<div class="app">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#50C8FF",
+  "secondAccent": "#A855F7",
+  "bgDepth": "deep",
+  "showTagline": true,
+  "nodeCount": 50,
+  "showHexGrid": true,
+  "glowIntensity": "medium",
+  "logoStyle": "full"
+}/*EDITMODE-END*/;
 
-  <!-- LEFT RAIL -->
-  <div class="rail">
-    <div class="rail-item active">
-      <span class="rail-icon">💬</span>
-      <span class="rail-label">Chat</span>
-    </div>
-    <div class="rail-item">
-      <span class="rail-icon">👥</span>
-      <span class="rail-label">Teams</span>
-    </div>
-    <div class="rail-item" style="position:relative;">
-      <span class="rail-icon">📅</span>
-      <span class="rail-label">Calendar</span>
-    </div>
-    <div class="rail-item" style="position:relative;">
-      <span class="rail-icon">📁</span>
-      <span class="rail-label">Files</span>
-    </div>
-    <div class="rail-item">
-      <span class="rail-icon">···</span>
-      <span class="rail-label">More</span>
-    </div>
-  </div>
+/* ─── Tweaks Panel ─────────────────────────────────────────────────────────── */
+function TweaksPanel({ tweaks, set, visible, onClose }) {
+  useEffect(() => {
+    const h = e => {
+      if (e.data?.type === '__activate_edit_mode')   onClose(false);
+      if (e.data?.type === '__deactivate_edit_mode') onClose(true);
+    };
+    window.addEventListener('message', h);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', h);
+  }, []);
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title">Chat</div>
-      <input class="sidebar-search" placeholder="🔍 Find a chat..." />
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">▾ Pinned</div>
-      <div class="sidebar-item active" onclick="selectChat('bot')">
-        <div class="bot-badge">🤖</div>
-        <div class="sidebar-item-info">
-          <div class="sidebar-item-name">YTLCC Bot</div>
-          <div class="sidebar-item-preview">Powered by ILMU · Notion</div>
-        </div>
-        <div class="sidebar-unread" id="unreadBadge" style="display:none">1</div>
-      </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">▾ Recent</div>
-      <div class="sidebar-item" onclick="selectChat('ian')">
-        <div class="relative">
-          <div class="chat-avatar" style="background:linear-gradient(135deg,#ca5010,#c50f1f)">IC</div>
-          <div class="status-dot"></div>
-        </div>
-        <div class="sidebar-item-info">
-          <div class="sidebar-item-name">Ian Chong</div>
-          <div class="sidebar-item-preview">Can you share the deck?</div>
-        </div>
-        <span style="font-size:10px;color:var(--teams-muted)">2h</span>
-      </div>
-      <div class="sidebar-item" onclick="selectChat('francis')">
-        <div class="relative">
-          <div class="chat-avatar" style="background:linear-gradient(135deg,#0078d4,#106ebe)">FR</div>
-          <div class="status-dot" style="background:#ca5010"></div>
-        </div>
-        <div class="sidebar-item-info">
-          <div class="sidebar-item-name">Francis</div>
-          <div class="sidebar-item-preview">LEAD run sheet updated</div>
-        </div>
-        <span style="font-size:10px;color:var(--teams-muted)">3h</span>
-      </div>
-      <div class="sidebar-item" onclick="selectChat('joelle')">
-        <div class="relative">
-          <div class="chat-avatar" style="background:linear-gradient(135deg,#107c10,#3a3)">JO</div>
-          <div class="status-dot"></div>
-        </div>
-        <div class="sidebar-item-info">
-          <div class="sidebar-item-name">Joelle</div>
-          <div class="sidebar-item-preview">Still waiting on vendor...</div>
-        </div>
-        <span style="font-size:10px;color:var(--teams-muted)">Yesterday</span>
-      </div>
-      <div class="sidebar-item" onclick="selectChat('ytlcc')">
-        <div class="chat-avatar" style="background:linear-gradient(135deg,#6264a7,#484a7a);border-radius:4px;font-size:10px;">YTLCC</div>
-        <div class="sidebar-item-info">
-          <div class="sidebar-item-name">YTLCC General</div>
-          <div class="sidebar-item-preview">Eugene: strategy deck ready</div>
-        </div>
-        <span style="font-size:10px;color:var(--teams-muted)">Yesterday</span>
-      </div>
-    </div>
-  </div>
+  if (!visible) return null;
 
-  <!-- CHAT AREA -->
-  <div class="chat-area">
+  const Toggle = ({ id }) => (
+    <button className="tp-tog"
+      style={{ background: tweaks[id] ? 'rgba(80,200,255,0.58)' : 'rgba(80,200,255,0.14)' }}
+      onClick={() => set(id, !tweaks[id])}>
+      <div className="tp-tog-t" style={{ left: tweaks[id] ? 15 : 2 }}></div>
+    </button>
+  );
 
-    <!-- CHAT HEADER -->
-    <div class="chat-header">
-      <div class="chat-header-avatar">🤖</div>
-      <div class="chat-header-info">
-        <div class="chat-header-name">YTLCC Bot</div>
-        <div class="chat-header-sub">Powered by ILMU · Notion Task Board · <span style="color:var(--green);">●</span> Connected</div>
-      </div>
-      <div class="chat-header-actions">
-        <button class="header-btn" title="Video call">📹</button>
-        <button class="header-btn" title="Audio call">📞</button>
-        <button class="header-btn" title="Screen share">🖥</button>
-        <button class="header-btn" title="More options">⋯</button>
-      </div>
-    </div>
-
-    <!-- MESSAGES -->
-    <div class="messages" id="messages">
-
-      <div class="date-divider">
-        <div class="date-divider-line"></div>
-        <span>Today, 23 April 2026</span>
-        <div class="date-divider-line"></div>
+  return (
+    <div className="tp">
+      <div className="tp-head">
+        Tweaks
+        <button className="tp-x" onClick={() => { onClose(true); window.parent.postMessage({type:'__edit_mode_dismissed'},'*'); }}>✕</button>
       </div>
 
-      <!-- Bot intro + pinned card -->
-      <div class="msg-group fade-in">
-        <div class="msg-bot-avatar">🤖</div>
-        <div class="msg-content">
-          <div class="msg-meta">
-            <span class="msg-sender">YTLCC Bot</span>
-            <span class="msg-time">9:00 AM</span>
+      <div className="tp-sec">Colors</div>
+      <div className="tp-row"><span className="tp-lbl">Primary</span>
+        <input type="color" className="tp-col" value={tweaks.accentColor} onChange={e=>set('accentColor',e.target.value)}/>
+      </div>
+      <div className="tp-row"><span className="tp-lbl">Secondary</span>
+        <input type="color" className="tp-col" value={tweaks.secondAccent} onChange={e=>set('secondAccent',e.target.value)}/>
+      </div>
+
+      <div className="tp-sec">Background</div>
+      <div className="tp-row"><span className="tp-lbl">Depth</span>
+        <select className="tp-sel" value={tweaks.bgDepth} onChange={e=>set('bgDepth',e.target.value)}>
+          <option value="ocean">Ocean</option>
+          <option value="deep">Space Dark</option>
+          <option value="midnight">Midnight</option>
+        </select>
+      </div>
+      <div className="tp-row"><span className="tp-lbl">Hex Grid</span><Toggle id="showHexGrid"/></div>
+      <div className="tp-row"><span className="tp-lbl">Glow</span>
+        <select className="tp-sel" value={tweaks.glowIntensity} onChange={e=>set('glowIntensity',e.target.value)}>
+          <option value="low">Subtle</option>
+          <option value="medium">Medium</option>
+          <option value="high">Intense</option>
+        </select>
+      </div>
+      <div className="tp-row"><span className="tp-lbl">Nodes ({tweaks.nodeCount})</span>
+        <input type="range" className="tp-rng" min={15} max={100} step={5}
+          value={tweaks.nodeCount} onChange={e=>set('nodeCount',Number(e.target.value))}/>
+      </div>
+
+      <div className="tp-sec">Branding</div>
+      <div className="tp-row"><span className="tp-lbl">Style</span>
+        <select className="tp-sel" value={tweaks.logoStyle} onChange={e=>set('logoStyle',e.target.value)}>
+          <option value="full">Full</option>
+          <option value="minimal">Name only</option>
+        </select>
+      </div>
+      <div className="tp-row" style={{marginBottom:8}}><span className="tp-lbl">Tagline</span><Toggle id="showTagline"/></div>
+    </div>
+  );
+}
+
+/* ─── Canvas ───────────────────────────────────────────────────────────────── */
+function NeuralCanvas({ width, height, tweaks }) {
+  const ref = useRef(null);
+  const raf = useRef(null);
+  const h2r = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+
+  useEffect(() => {
+    if (!width || !height) return;
+    const cv = ref.current;
+    const cx = cv.getContext('2d');
+    cv.width = width; cv.height = height;
+
+    const a1 = h2r(tweaks.accentColor);
+    const a2 = h2r(tweaks.secondAccent);
+    const gm = tweaks.glowIntensity==='low'?.5:tweaks.glowIntensity==='high'?1.8:1;
+    const N  = tweaks.nodeCount;
+
+    const nodes = Array.from({length:N}, ()=>({
+      x: Math.random()*width, y: Math.random()*height,
+      vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+      r: Math.random()*2+.8, phase:Math.random()*Math.PI*2, spd:Math.random()*.02+.005,
+    }));
+
+    const hexes = [];
+    if (tweaks.showHexGrid) {
+      const hr=55, hw=hr*2, hh=Math.sqrt(3)*hr;
+      for (let row=-2;row<height/hh+2;row++)
+        for (let col=-2;col<width/hw+2;col++)
+          hexes.push({x:col*hw*.75, y:row*hh+(col%2===0?0:hh/2), r:hr,
+            al:Math.random()*.055+.01, phase:Math.random()*Math.PI*2});
+    }
+
+    function hp(x,y,r) {
+      cx.beginPath();
+      for (let i=0;i<6;i++) {
+        const a=(Math.PI/3)*i-Math.PI/6;
+        i===0?cx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a)):cx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));
+      }
+      cx.closePath();
+    }
+
+    let t=0;
+    function draw() {
+      cx.clearRect(0,0,width,height);
+      // BG gradient
+      const bg=cx.createRadialGradient(width*.5,height*.4,0,width*.5,height*.5,height*.7);
+      const d=tweaks.bgDepth;
+      bg.addColorStop(0, d==='midnight'?'rgb(15,5,30)':d==='ocean'?'rgb(5,18,40)':'rgb(8,14,35)');
+      bg.addColorStop(.5,d==='midnight'?'rgb(8,3,20)':d==='ocean'?'rgb(3,10,28)':'rgb(5,8,22)');
+      bg.addColorStop(1, d==='midnight'?'rgb(2,1,8)':d==='ocean'?'rgb(1,5,15)':'rgb(2,3,10)');
+      cx.fillStyle=bg; cx.fillRect(0,0,width,height);
+
+      // Nebula blobs
+      [[width*.15,height*.25,width*.6,a1],[width*.85,height*.7,width*.5,a2],[width*.5,height*.5,width*.4,a1]].forEach(([bx,by,br,c])=>{
+        const g=cx.createRadialGradient(bx,by,0,bx,by,br);
+        g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${.07*gm})`);
+        g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
+        cx.fillStyle=g; cx.beginPath(); cx.arc(bx,by,br,0,Math.PI*2); cx.fill();
+      });
+
+      // Hex grid
+      hexes.forEach(h=>{
+        const al=(Math.sin(t*.3+h.phase)*.5+.5)*h.al;
+        cx.strokeStyle=`rgba(${a1[0]},${a1[1]},${a1[2]},${al})`; cx.lineWidth=.4;
+        hp(h.x,h.y,h.r); cx.stroke();
+      });
+
+      // Connections
+      const md=150;
+      for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<md){
+          const al=(1-dist/md)*.3*gm;
+          const m=(nodes[i].phase+nodes[j].phase)/(Math.PI*4);
+          cx.strokeStyle=`rgba(${Math.round(a1[0]*(1-m)+a2[0]*m)},${Math.round(a1[1]*(1-m)+a2[1]*m)},${Math.round(a1[2]*(1-m)+a2[2]*m)},${al})`;
+          cx.lineWidth=(1-dist/md);
+          cx.beginPath(); cx.moveTo(nodes[i].x,nodes[i].y); cx.lineTo(nodes[j].x,nodes[j].y); cx.stroke();
+        }
+      }
+
+      // Core glow (centered upper-half)
+      const ccx=width*.5, ccy=height*.38, cr=80+Math.sin(t*.5)*10;
+      const cg=cx.createRadialGradient(ccx,ccy,0,ccx,ccy,cr);
+      cg.addColorStop(0,`rgba(${a1[0]},${a1[1]},${a1[2]},${.2*gm})`);
+      cg.addColorStop(.4,`rgba(${a1[0]},${a1[1]},${a1[2]},${.07*gm})`);
+      cg.addColorStop(1,`rgba(${a1[0]},${a1[1]},${a1[2]},0)`);
+      cx.fillStyle=cg; cx.beginPath(); cx.arc(ccx,ccy,cr,0,Math.PI*2); cx.fill();
+
+      // Nodes
+      nodes.forEach(n=>{
+        const pulse=Math.sin(t*n.spd*60+n.phase);
+        const r=n.r+pulse*.7, al=.5+pulse*.28;
+        const m=n.phase/(Math.PI*2);
+        const nr=Math.round(a1[0]*(1-m)+a2[0]*m), ng=Math.round(a1[1]*(1-m)+a2[1]*m), nb=Math.round(a1[2]*(1-m)+a2[2]*m);
+        const ng2=cx.createRadialGradient(n.x,n.y,0,n.x,n.y,r*5);
+        ng2.addColorStop(0,`rgba(${nr},${ng},${nb},${.14*gm})`);
+        ng2.addColorStop(1,`rgba(${nr},${ng},${nb},0)`);
+        cx.fillStyle=ng2; cx.beginPath(); cx.arc(n.x,n.y,r*5,0,Math.PI*2); cx.fill();
+        cx.fillStyle=`rgba(${nr},${ng},${nb},${al})`; cx.beginPath(); cx.arc(n.x,n.y,r,0,Math.PI*2); cx.fill();
+        n.x+=n.vx; n.y+=n.vy;
+        if(n.x<0)n.x=width; if(n.x>width)n.x=0;
+        if(n.y<0)n.y=height; if(n.y>height)n.y=0;
+      });
+
+      t+=.016;
+      raf.current=requestAnimationFrame(draw);
+    }
+    draw();
+    return ()=>cancelAnimationFrame(raf.current);
+  }, [width, height, JSON.stringify(tweaks)]);
+
+  return <canvas ref={ref} style={{position:'absolute',top:0,left:0}}/>;
+}
+
+/* ─── Overlay ──────────────────────────────────────────────────────────────── */
+function Overlay({ width, height, tweaks }) {
+  // Portrait scale: reference 390×844
+  const s  = Math.min(width/390, height/844);
+  const ac = tweaks.accentColor;
+  const a2 = tweaks.secondAccent;
+  const rR = 80*s; // ring radius
+
+  return (
+    <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',
+      alignItems:'center',justifyContent:'center',pointerEvents:'none',zIndex:10}}>
+
+      {/* Corners */}
+      {[['tl',{top:0,left:0}],['tr',{top:0,right:0}],['bl',{bottom:0,left:0}],['br',{bottom:0,right:0}]].map(([cls,pos])=>(
+        <div key={cls} className={`corner ${cls}`} style={{...pos,width:36*s,height:36*s}}></div>
+      ))}
+
+      {/* Logo block */}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0,marginTop:-40*s}}>
+
+        {/* Rings + hex icon */}
+        <div style={{position:'relative',width:rR*2,height:rR*2,display:'flex',
+          alignItems:'center',justifyContent:'center',marginBottom:24*s}}>
+          <div className="ring" style={{width:rR*2,height:rR*2,borderColor:`${ac}20`,animationDuration:'28s'}}></div>
+          <div className="ring" style={{width:rR*1.55,height:rR*1.55,borderColor:`${ac}3a`,
+            borderStyle:'dashed',animationDuration:'18s',animationDirection:'reverse'}}></div>
+          <div className="ring" style={{width:rR,height:rR,borderColor:`${ac}65`,animationDuration:'12s'}}></div>
+
+          <svg width={rR*.55} height={rR*.55} viewBox="0 0 80 80" style={{position:'relative',zIndex:2}}>
+            <defs>
+              <radialGradient id="hg" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={ac} stopOpacity="0.9"/>
+                <stop offset="100%" stopColor={a2} stopOpacity="0.6"/>
+              </radialGradient>
+            </defs>
+            <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" fill="none" stroke={ac} strokeWidth="1.5" strokeOpacity="0.5"/>
+            <polygon points="40,18 60,29 60,51 40,62 20,51 20,29" fill="url(#hg)" fillOpacity="0.12" stroke={ac} strokeWidth="1" strokeOpacity="0.85"/>
+            <circle cx="40" cy="40" r="5" fill={ac} fillOpacity="0.95"/>
+            {[[40,18],[60,29],[60,51],[40,62],[20,51],[20,29]].map(([x,y],i)=>(
+              <g key={i}>
+                <line x1={x} y1={y} x2="40" y2="40" stroke={ac} strokeWidth="0.8" strokeOpacity="0.4"/>
+                <circle cx={x} cy={y} r="2.2" fill={i%2===0?ac:a2} fillOpacity="0.85"/>
+              </g>
+            ))}
+          </svg>
+        </div>
+
+        {/* ILMU BOT */}
+        <div style={{
+          fontFamily:"'Space Grotesk', sans-serif", fontWeight:700,
+          fontSize: 52*s, letterSpacing:'0.16em', textTransform:'uppercase',
+          lineHeight:1, whiteSpace:'nowrap',
+          paddingBottom: 6*s, paddingLeft: 4*s, paddingRight: 4*s,
+          background:'linear-gradient(135deg,#fff 0%,rgba(120,220,255,0.92) 50%,rgba(180,120,255,0.88) 100%)',
+          WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
+          filter:`drop-shadow(0 0 ${20*s}px rgba(80,200,255,0.5))`,
+        }}>ILMU BOT</div>
+
+        {/* Subtitle */}
+        {tweaks.logoStyle !== 'minimal' && (
+          <div style={{
+            fontFamily:"'Space Mono', monospace", fontSize:11*s, letterSpacing:'0.35em',
+            textTransform:'uppercase', color:'rgba(120,200,255,0.7)',
+            filter:`drop-shadow(0 0 ${6*s}px rgba(80,200,255,0.35))`,
+            marginTop: 10*s, whiteSpace:'nowrap',
+          }}>AI&nbsp;&nbsp;Assistant&nbsp;&nbsp;for&nbsp;&nbsp;Teams</div>
+        )}
+
+        {/* Tagline */}
+        {tweaks.showTagline && (
+          <div style={{display:'flex',alignItems:'center',gap:10*s,marginTop:18*s,width:'100%',justifyContent:'center'}}>
+            <div style={{width:40*s,height:1,background:`linear-gradient(to right,transparent,${ac}55)`,flexShrink:0}}></div>
+            <div style={{
+              fontFamily:"'Space Grotesk',sans-serif", fontWeight:300, fontSize:9*s,
+              letterSpacing:'0.11em', textTransform:'uppercase', color:'rgba(200,230,255,0.38)',
+              whiteSpace:'nowrap',
+            }}>Intelligent&nbsp;·&nbsp;Adaptive&nbsp;·&nbsp;Always On</div>
+            <div style={{width:40*s,height:1,background:`linear-gradient(to left,transparent,${ac}55)`,flexShrink:0}}></div>
           </div>
-          <div class="pinned-card">
-            <div class="pinned-notice">📌 Pinned · YTLCC Department Assistant</div>
-            <div class="pinned-header">
-              <div class="pinned-title">Good morning, Bradley 👋</div>
-              <div class="pinned-sub">Ask me anything about your team's tasks and projects from Notion. I'm connected live.</div>
-            </div>
-            <div class="quick-grid">
-              <button class="quick-btn" onclick="quickQuery('needs attention')">
-                <span class="quick-btn-icon">🚨</span>
-                <span class="quick-btn-label">Needs Attention</span>
-              </button>
-              <button class="quick-btn" onclick="quickQuery('what is due soon')">
-                <span class="quick-btn-icon">📅</span>
-                <span class="quick-btn-label">Due Soon</span>
-              </button>
-              <button class="quick-btn" onclick="quickQuery('give me a project update')">
-                <span class="quick-btn-icon">📊</span>
-                <span class="quick-btn-label">Project Update</span>
-              </button>
-              <button class="quick-btn" onclick="quickQuery('who is working on what')">
-                <span class="quick-btn-icon">👥</span>
-                <span class="quick-btn-label">Team Update</span>
-              </button>
-              <button class="quick-btn" onclick="quickQuery('what tasks are blocked')">
-                <span class="quick-btn-icon">🚧</span>
-                <span class="quick-btn-label">Blocked</span>
-              </button>
-              <button class="quick-btn" onclick="quickQuery('give me a full summary of all tasks')">
-                <span class="quick-btn-icon">📋</span>
-                <span class="quick-btn-label">Summary</span>
-              </button>
-            </div>
-            <div class="person-search-row">
-              <input class="person-input" id="personInput" placeholder="Search by person — e.g. Francis, Joelle, Rachel..." />
-              <button class="person-search-btn" onclick="searchPerson()">Search</button>
-            </div>
-          </div>
+        )}
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{
+        position:'absolute', bottom:0, left:0, right:0,
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:`${8*s}px ${20*s}px`,
+        borderTop:'1px solid rgba(80,200,255,0.1)',
+        background:'linear-gradient(to top, rgba(0,5,20,0.65) 0%, transparent 100%)',
+      }}>
+        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.12em',
+          textTransform:'uppercase',color:'rgba(120,200,255,0.38)'}}>
+          <span className="status-dot" style={{width:5*s,height:5*s}}></span>Online
         </div>
-      </div>
-
-      <!-- Typing indicator -->
-      <div class="msg-group typing-wrap" id="typingWrap">
-        <div class="msg-bot-avatar">🤖</div>
-        <div class="msg-content">
-          <div class="msg-meta">
-            <span class="msg-sender">YTLCC Bot</span>
-            <span class="msg-time" id="typingTime"></span>
-          </div>
-          <div class="typing-bubble">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span style="margin-left:4px;font-size:11px;" id="typingLabel">Querying Notion...</span>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /messages -->
-
-    <!-- INPUT BAR -->
-    <div class="input-bar">
-      <div class="input-toolbar">
-        <button class="toolbar-btn" title="Format">𝐁</button>
-        <button class="toolbar-btn" title="Attach">📎</button>
-        <button class="toolbar-btn" title="Emoji">😊</button>
-        <button class="toolbar-btn" title="GIF">GIF</button>
-        <button class="toolbar-btn" title="Sticker">🎨</button>
-        <button class="toolbar-btn" title="Loop">🔁</button>
-        <button class="toolbar-btn" title="More">⋯</button>
-      </div>
-      <div class="input-row">
-        <textarea class="chat-textarea" id="chatInput" rows="1" placeholder="Ask YTLCC Bot anything about your tasks..."></textarea>
-        <button class="send-btn" id="sendBtn" onclick="handleSend()">➤</button>
+        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.1em',
+          textTransform:'uppercase',color:'rgba(120,200,255,0.28)'}}>ILMU Bot · AI</div>
+        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.1em',
+          textTransform:'uppercase',color:'rgba(120,200,255,0.28)'}}>v2.0 · 2026</div>
       </div>
     </div>
-
-  </div><!-- /chat-area -->
-
-</div><!-- /app -->
-
-<script>
-// ─── CONFIG ───────────────────────────────────────────────
-const ILMU_KEY = 'sk-3798276678302b6df79e01febf662b0073e66c65d31dbd2c';
-const ILMU_URL = 'https://corsproxy.io/?https://api.ilmu.ai/v1';
-const MODEL    = 'nemo-nano';
-
-// ─── REAL NOTION DATA (fetched live by Claude) ────────────
-const NOTION_CONTEXT = `YTLCC Department Task Board — Dashboard YTLCC x Projects 2026
-Retrieved: 23 April 2026
-
-TASK: Confirm venue and production checklist
-Project: Founders' Day (Placeholder) | Team: Production
-Status: Blocker | Priority: High
-Due Date: 2026-04-06 (OVERDUE)
-Blocker: Vendor availability
-Next Action: Lock vendor + confirm setup schedule
-Remarks: Waiting for vendor confirmation
-Company: YTL Construction
-
-TASK: Audio Tour (Placeholder)
-Project: Audio Museum Tour | Team: Digital
-Status: Not Started | Priority: Medium
-Due Date: Not set
-Blocker: None
-Next Action: Confirm scope (stops, languages) + required deliverables; set due date; assign PICs.
-Remarks: Placeholder row created for tracking. Update once brief is available.
-Task Brief: TBD — Add tour stops/flow, script tone, languages, audio format/specs, talent/VO needs, and delivery platform (QR/app/device).
-Deliverables: Copy, Design, Website
-Channels: Website, Event on-site / screens
-Company: YTL Developments
-
-TASK: Build landing page wireframe
-Project: BTRT Website Improvement (Placeholder) | Team: Digital
-Status: In Progress | Priority: Medium
-Due Date: 2026-04-25
-Blocker: None
-Next Action: Review wireframe with stakeholders
-
-TASK: Draft key visual direction
-Project: Founders' Day (Placeholder) | Team: Design
-Status: In Progress | Priority: High
-Due Date: 2026-04-22 (OVERDUE)
-Blocker: None
-Next Action: Present to Ian for sign-off
-
-TASK: Finalize event messaging pillars
-Project: LEAD 2026 | Team: Brand
-Status: In Progress | Priority: High
-Due Date: 2026-04-28
-Blocker: None
-Next Action: Align with comms team before deck submission
-
-TASK: Align brand narrative for campaign deck
-Project: LEAD 2026 | Team: Brand
-Status: Not Started | Priority: Medium
-Due Date: 2026-05-05
-Blocker: None
-Next Action: Brief the team once messaging pillars are approved
-
-TASK: BTRT Website
-Project: BTRT Website Improvement (Placeholder) | Team: Digital
-Status: In Progress | Priority: High
-Due Date: 2026-04-30
-Blocker: None
-Next Action: Adding Events Page and reviewing content structure
-Remarks: Content review ongoing
-
-TASK: Website Update
-Project: Others | Team: Digital
-Status: In Progress | Priority: Medium
-Due Date: 2026-05-10
-Blocker: None
-Next Action: Coordinate with IT on hosting
-
-Team members known to work on tasks: Francis (LEAD 2026), Joelle (Founders Day production), Eugene (Digital/Social), Rachel (BTRT), Mun Teng (Audio Museum Tour)
-Projects active: Audio Museum Tour, BTRT Website Improvement, Founders Day, LEAD 2026, Others
-Sub-teams: Brand, Design, Comms, Digital, Production
-`;
-
-// ─── SYSTEM PROMPT ────────────────────────────────────────
-const SYSTEM = `You are YTLCC Bot, a friendly and smart department assistant for YTLCC (YTL Creative Communications), a creative communications team. You have access to the team's live Notion task board data.
-
-Your job is to help the team understand what's going on with their projects and tasks — answer naturally, like a helpful colleague, not a robot.
-
-RULES:
-- Reply conversationally and clearly. You can use plain text with line breaks.
-- For task lists, format each as: • Project — Task: brief note
-- Always surface BLOCKED or OVERDUE tasks first if relevant
-- Be concise but complete. Don't pad responses.
-- You can answer general questions too, not just task queries.
-- If asked about a person, look through the task data for their name.
-- Today's date is 23 April 2026.
-- Sign off responses with nothing — just end naturally.
-
-Here is the live Notion task board data:
-
-${NOTION_CONTEXT}`;
-
-// ─── CONVERSATION HISTORY ─────────────────────────────────
-let history = [];
-let isLoading = false;
-
-// ─── UTILS ───────────────────────────────────────────────
-function nowTime() {
-  return new Date().toLocaleTimeString('en-MY', { hour:'2-digit', minute:'2-digit', hour12:true });
+  );
 }
 
-function scrollBottom() {
-  const m = document.getElementById('messages');
-  setTimeout(() => m.scrollTo({ top: m.scrollHeight, behavior: 'smooth' }), 50);
-}
+/* ─── App ──────────────────────────────────────────────────────────────────── */
+function App() {
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+  const [panel,  setPanel]  = useState(false);
+  const [dims,   setDims]   = useState({w:390,h:844});
 
-// ─── UI: ADD USER MESSAGE ─────────────────────────────────
-function addUserMsg(text) {
-  const msgs = document.getElementById('messages');
-  const typingWrap = document.getElementById('typingWrap');
-  const div = document.createElement('div');
-  div.className = 'msg-group user-group fade-in';
-  div.innerHTML = `
-    <div class="relative">
-      <div class="msg-avatar" style="background:linear-gradient(135deg,#ca5010,#c50f1f)">BT</div>
-    </div>
-    <div class="msg-content">
-      <div class="msg-meta">
-        <span class="msg-sender">Bradley Tan</span>
-        <span class="msg-time">${nowTime()}</span>
-      </div>
-      <div class="user-bubble">${text}</div>
-    </div>`;
-  msgs.insertBefore(div, typingWrap);
-  scrollBottom();
-}
-
-// ─── UI: SHOW/HIDE TYPING ─────────────────────────────────
-function showTyping(label = 'Querying Notion...') {
-  document.getElementById('typingLabel').textContent = label;
-  document.getElementById('typingTime').textContent = nowTime();
-  document.getElementById('typingWrap').classList.add('show');
-  scrollBottom();
-}
-
-function hideTyping() {
-  document.getElementById('typingWrap').classList.remove('show');
-}
-
-// ─── UI: ADD BOT RESPONSE ─────────────────────────────────
-function addBotMsg(text) {
-  const msgs = document.getElementById('messages');
-  const typingWrap = document.getElementById('typingWrap');
-  const div = document.createElement('div');
-  div.className = 'msg-group fade-in';
-  div.innerHTML = `
-    <div class="msg-bot-avatar">🤖</div>
-    <div class="msg-content">
-      <div class="msg-meta">
-        <span class="msg-sender">YTLCC Bot</span>
-        <span class="msg-time">${nowTime()}</span>
-      </div>
-      <div class="bot-card">
-        <div class="card-accent"></div>
-        <div class="card-body" style="padding:12px 14px">
-          <div class="bot-text">${text}</div>
-        </div>
-        <div class="card-actions">
-          <button class="card-btn" onclick="quickQuery('what needs attention')">🚨 Needs Attention</button>
-          <button class="card-btn" onclick="quickQuery('what is blocked')">🚧 Blocked</button>
-          <button class="card-btn" onclick="quickQuery('what is due soon')">📅 Due Soon</button>
-          <button class="card-btn" onclick="quickQuery('full summary')">📋 Summary</button>
-        </div>
-      </div>
-    </div>`;
-  msgs.insertBefore(div, typingWrap);
-  scrollBottom();
-}
-
-function addErrorMsg(err) {
-  const msgs = document.getElementById('messages');
-  const typingWrap = document.getElementById('typingWrap');
-  const div = document.createElement('div');
-  div.className = 'msg-group fade-in';
-  div.innerHTML = `
-    <div class="msg-bot-avatar">🤖</div>
-    <div class="msg-content">
-      <div class="msg-meta">
-        <span class="msg-sender">YTLCC Bot</span>
-        <span class="msg-time">${nowTime()}</span>
-      </div>
-      <div class="bot-text" style="color:var(--red);font-size:13px;">⚠️ ${err}</div>
-    </div>`;
-  msgs.insertBefore(div, typingWrap);
-  scrollBottom();
-}
-
-// ─── CALL ILMU API ────────────────────────────────────────
-async function callILMU(userMessage) {
-  history.push({ role: 'user', content: userMessage });
-
-  const payload = {
-    model: MODEL,
-    max_tokens: 600,
-    messages: [
-      { role: 'system', content: SYSTEM },
-      ...history
-    ]
-  };
-
-  const res = await fetch(ILMU_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${ILMU_KEY}`
-    },
-    body: JSON.stringify(payload)
+  const set = (k, v) => setTweaks(prev => {
+    const next = {...prev, [k]:v};
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}},'*');
+    return next;
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`ILMU API error ${res.status}: ${err}`);
-  }
+  useEffect(() => {
+    const onMsg = e => {
+      if (e.data?.type==='__activate_edit_mode')   setPanel(true);
+      if (e.data?.type==='__deactivate_edit_mode') setPanel(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({type:'__edit_mode_available'},'*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
-  const data = await res.json();
-  const reply = data?.choices?.[0]?.message?.content;
+  useEffect(() => {
+    const upd = () => {
+      const vw=window.innerWidth, vh=window.innerHeight;
+      // Portrait 9:19.5
+      const ar = 9/19.5;
+      let w,h;
+      if (vw/vh > ar) { h=vh; w=h*ar; } else { w=vw; h=w/ar; }
+      setDims({w:Math.round(w), h:Math.round(h)});
+    };
+    upd();
+    window.addEventListener('resize', upd);
+    return () => window.removeEventListener('resize', upd);
+  }, []);
 
-  if (!reply) throw new Error('No response from ILMU. Try again.');
+  const download = useCallback(() => {
+    const cv = document.querySelector('canvas');
+    if (!cv) return;
+    const W=1080, H=2340;
+    const out = document.createElement('canvas');
+    out.width=W; out.height=H;
+    const ctx = out.getContext('2d');
+    ctx.drawImage(cv, 0, 0, W, H);
+    // Text
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const gr=ctx.createLinearGradient(W*.2,H*.5,W*.8,H*.5);
+    gr.addColorStop(0,'#fff'); gr.addColorStop(.5,'rgba(120,220,255,.95)'); gr.addColorStop(1,'rgba(180,120,255,.9)');
+    ctx.font='bold 144px Arial'; ctx.fillStyle=gr;
+    ctx.shadowColor=tweaks.accentColor; ctx.shadowBlur=40;
+    ctx.fillText('ILMU BOT', W*.5, H*.42);
+    ctx.font='38px Arial'; ctx.fillStyle='rgba(120,200,255,.7)'; ctx.shadowBlur=12;
+    ctx.fillText('AI  ASSISTANT  FOR  TEAMS', W*.5, H*.47);
+    out.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='ILMU-Bot-Background.png'; a.click();
+      URL.revokeObjectURL(url);
+    },'image/png');
+  }, [tweaks.accentColor]);
 
-  history.push({ role: 'assistant', content: reply });
+  return (
+    <div style={{width:'100vw',height:'100vh',background:'#000',display:'flex',
+      alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
 
-  // Keep history manageable (last 10 turns)
-  if (history.length > 20) history = history.slice(-20);
+      <div style={{position:'relative',width:dims.w,height:dims.h,flexShrink:0,overflow:'hidden'}}>
+        <NeuralCanvas width={dims.w} height={dims.h} tweaks={tweaks}/>
+        <Overlay      width={dims.w} height={dims.h} tweaks={tweaks}/>
+      </div>
 
-  return reply;
+      <TweaksPanel tweaks={tweaks} set={set} visible={panel} onClose={hide=>setPanel(!hide)}/>
+      <button className="dl-btn" onClick={download}>↓ Export PNG</button>
+    </div>
+  );
 }
 
-// ─── MAIN SEND FLOW ───────────────────────────────────────
-async function send(message) {
-  if (!message.trim() || isLoading) return;
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-
-  addUserMsg(message);
-  showTyping('Thinking...');
-
-  try {
-    const reply = await callILMU(message);
-    hideTyping();
-    addBotMsg(reply);
-  } catch (e) {
-    hideTyping();
-    addErrorMsg(e.message || 'Something went wrong. Please try again.');
-  }
-
-  isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
-}
-
-function handleSend() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  input.style.height = 'auto';
-  send(msg);
-}
-
-function quickQuery(q) {
-  send(q);
-}
-
-function searchPerson() {
-  const val = document.getElementById('personInput').value.trim();
-  if (!val) return;
-  document.getElementById('personInput').value = '';
-  send(`What is ${val} currently working on?`);
-}
-
-// ─── AUTO-RESIZE TEXTAREA ─────────────────────────────────
-document.getElementById('chatInput').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-});
-
-document.getElementById('chatInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    handleSend();
-  }
-});
-
-document.getElementById('personInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') searchPerson();
-});
-
-function selectChat(who) {
-  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
