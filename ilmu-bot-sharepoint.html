@@ -482,17 +482,17 @@ html, body {
   <!-- TOP BAR -->
   <header class="topbar">
     <div class="topbar-logo">🤖</div>
-    <span class="topbar-name">ILMU Claw</span>
+    <span class="topbar-name">ILMU Bot</span>
     <span class="topbar-tag">YTLCC</span>
     <div class="topbar-spacer"></div>
-    <button class="config-btn" onclick="openConfig()">⚙ Configure ILMU Claw</button>
+    <button class="config-btn" onclick="openConfig()">⚙ Configure ILMU Bot</button>
   </header>
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <span class="nav-label">Menu</span>
     <div class="nav-item active" onclick="showScreen('chat')" id="nav-chat">
-      <span class="nav-icon">💬</span> Ask ILMU Claw
+      <span class="nav-icon">💬</span> Ask ILMU Bot
     </div>
     <div class="nav-item" onclick="showScreen('tasks')" id="nav-tasks">
       <span class="nav-icon">📋</span> View Tasks
@@ -524,7 +524,7 @@ html, body {
       <div class="chat-area" id="chat-area">
         <div class="chat-welcome" id="chat-welcome">
           <span class="w-icon">🤖</span>
-          <h2>Ask ILMU Claw anything</h2>
+          <h2>Ask ILMU Bot anything</h2>
           <p>I can answer questions about your Notion tasks, projects, blockers, and team workload.</p>
           <div class="chips">
             <div class="chip" onclick="quickAsk('What tasks are blocked right now?')">🔴 What\'s blocked?</div>
@@ -635,16 +635,16 @@ html, body {
 <!-- ── CONFIG MODAL ── -->
 <div class="modal-overlay" id="config-modal">
   <div class="modal">
-    <div class="modal-title">⚙ Configure ILMU Claw</div>
+    <div class="modal-title">⚙ Configure ILMU Bot</div>
 
     <div style="padding:12px 14px;background:var(--s2);border-radius:var(--r-sm);font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.7;">
-      ✅ Worker URL and Database ID are already set.<br>
-      You only need to enter 2 keys below.
+      ✅ ILMU key, Worker URL, and Database ID are pre-configured.<br>
+      You only need to enter your Notion token below.
     </div>
 
     <div class="modal-field">
-      <label>ILMU Claw API Key</label>
-      <input type="password" id="cfg-anthropic" placeholder="sk-..." />
+      <label>ILMU Bot API Key (optional override)</label>
+      <input type="password" id="cfg-ilmu" placeholder="sk-..." />
       <small>Get from <strong style="color:var(--text)">console.ilmu.ai</strong> → Dashboard → API Keys</small>
     </div>
 
@@ -667,10 +667,10 @@ html, body {
 
 <script>
 // ── STATE ────────────────────────────────────────────────────────
-let CFG = { anthropic: '', notion: '', dbid: '6807054f444c4cdb973ed3a2b81cf6b9', proxy: 'https://ilmu-proxy.jiawei9466.workers.dev' };
+let CFG = { ilmuKey: '', notion: '', dbid: '6807054f444c4cdb973ed3a2b81cf6b9', proxy: 'https://ilmu-proxy.jiawei9466.workers.dev' };
 let allTasks = [];
 let chatHistory = [];
-const NOTION_SYSTEM = `You are ILMU Claw, a smart AI department assistant for YTLCC (YTL Creative Communications), a 30-person creative department. You help Bradley Tan, Senior Brand Executive, manage his team's tasks, projects, and workload.
+const NOTION_SYSTEM = `You are ILMU Bot, a smart AI department assistant for YTLCC (YTL Creative Communications), a 30-person creative department. You help Bradley Tan, Senior Brand Executive, manage his team's tasks, projects, and workload.
 
 When answering questions about tasks, be specific, actionable, and concise. Organise your answers clearly. If tasks data is provided, analyse it properly.
 
@@ -687,7 +687,7 @@ function loadConfig() {
 }
 
 function saveConfig() {
-  CFG.anthropic = document.getElementById('cfg-anthropic').value.trim();
+  CFG.ilmuKey = document.getElementById('cfg-ilmu').value.trim();
   CFG.notion    = document.getElementById('cfg-notion').value.trim();
   localStorage.setItem('ilmu_cfg', JSON.stringify(CFG));
   closeConfig();
@@ -695,7 +695,7 @@ function saveConfig() {
 }
 
 function openConfig() {
-  document.getElementById('cfg-anthropic').value = CFG.anthropic;
+  document.getElementById('cfg-ilmu').value = CFG.ilmuKey;
   document.getElementById('cfg-notion').value    = CFG.notion;
   document.getElementById('config-modal').classList.add('open');
 }
@@ -723,7 +723,7 @@ function addMsg(role, text) {
   const wrap = document.createElement('div');
   wrap.className = 'msg ' + role;
   wrap.innerHTML = `
-    <div class="msg-label">${role === 'user' ? 'You' : 'ILMU Claw'}</div>
+    <div class="msg-label">${role === 'user' ? 'You' : 'ILMU Bot'}</div>
     <div class="msg-bubble">${text}</div>`;
   area.appendChild(wrap);
   area.scrollTop = area.scrollHeight;
@@ -740,7 +740,7 @@ async function sendChat() {
   const input = document.getElementById('chat-input');
   const q = input.value.trim();
   if (!q) return;
-  if (!CFG.anthropic) { openConfig(); return; }
+  if (!CFG.ilmuKey && !CFG.notion) { openConfig(); return; }
 
   addMsg('user', q);
   chatHistory.push({ role: 'user', content: q });
@@ -766,11 +766,12 @@ async function sendChat() {
 
     const systemMsg = NOTION_SYSTEM + taskContext;
 
-    const res = await fetch('https://api.ilmu.ai/v1/chat/completions', {
+    const ilmuUrl = `${CFG.proxy}/ilmu/chat/completions`;
+    const res = await fetch(ilmuUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CFG.anthropic}`
+
       },
       body: JSON.stringify({
         model: 'nemo-super',
@@ -791,7 +792,7 @@ async function sendChat() {
 
   } catch(err) {
     thinking.remove();
-    addMsg('bot', '⚠️ Error reaching ILMU Claw API. Check your API key in ⚙ Configure.');
+    addMsg('bot', '⚠️ Error reaching ILMU Bot API. Check your API key in ⚙ Configure.');
   }
 
   document.getElementById('send-btn').disabled = false;
@@ -968,7 +969,7 @@ function showToast(msg) {
 // ── INIT ──────────────────────────────────────────────────────────
 document.getElementById('f-due').valueAsDate = new Date();
 loadConfig();
-if (!CFG.anthropic) setTimeout(openConfig, 600);
+if (!CFG.ilmuKey && !CFG.notion) setTimeout(openConfig, 600);
 </script>
 </body>
 </html>
