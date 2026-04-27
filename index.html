@@ -3,463 +3,972 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ILMU Bot – Background</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<title>ILMU Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #000; overflow: hidden; font-family: 'Space Grotesk', sans-serif; }
+/* ── RESET & TOKENS ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0d0d12;
+  --s1:       #14141c;
+  --s2:       #1a1a25;
+  --s3:       #20202e;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --accent:   #6c63ff;
+  --accent2:  #9b8fff;
+  --adim:     rgba(108,99,255,0.14);
+  --text:     #ededf5;
+  --muted:    rgba(237,237,245,0.42);
+  --success:  #2dd4a0;
+  --warn:     #f5a623;
+  --danger:   #f06060;
+  --r:        12px;
+  --r-sm:     8px;
+}
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: hidden;
+}
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 6px #4DFFA0; }
-    50%       { opacity: 0.4; box-shadow: 0 0 2px #4DFFA0; }
-  }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+/* ── LAYOUT ─────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 56px 1fr;
+  height: 100vh;
+  width: 100vw;
+}
 
-  .ring {
-    position: absolute; border-radius: 50%; border: 1px solid;
-    animation: spin linear infinite;
-  }
-  .status-dot {
-    display: inline-block; border-radius: 50%; background: #4DFFA0;
-    animation: pulse-dot 2s ease-in-out infinite;
-    vertical-align: middle; margin-right: 5px;
-  }
-  .corner { position: absolute; }
-  .corner.tl { top:0; left:0;  border-top:  1.5px solid rgba(80,200,255,0.55); border-left:  1.5px solid rgba(80,200,255,0.55); }
-  .corner.tr { top:0; right:0; border-top:  1.5px solid rgba(80,200,255,0.55); border-right: 1.5px solid rgba(80,200,255,0.55); }
-  .corner.bl { bottom:0; left:0;  border-bottom: 1.5px solid rgba(80,200,255,0.55); border-left:  1.5px solid rgba(80,200,255,0.55); }
-  .corner.br { bottom:0; right:0; border-bottom: 1.5px solid rgba(80,200,255,0.55); border-right: 1.5px solid rgba(80,200,255,0.55); }
+/* ── TOP BAR ─────────────────────────────────────────── */
+.topbar {
+  grid-column: 1 / -1;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+}
+.topbar-logo {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.topbar-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+}
+.topbar-tag {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 10px;
+}
+.topbar-spacer { flex: 1; }
+.config-btn {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  font-size: 12px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+}
+.config-btn:hover { color: var(--text); border-color: var(--border2); }
 
-  /* Tweaks panel */
-  .tp {
-    position: fixed; bottom: 72px; right: 12px; z-index: 9999;
-    background: rgba(6,10,26,0.93); border: 1px solid rgba(80,200,255,0.22);
-    backdrop-filter: blur(16px); width: 232px;
-    animation: fadeIn 0.18s ease;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-  }
-  .tp-head {
-    padding: 11px 14px; font-size: 10px; font-weight: 600;
-    letter-spacing: 0.16em; text-transform: uppercase;
-    color: rgba(120,200,255,0.8); border-bottom: 1px solid rgba(80,200,255,0.12);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .tp-x { background:none; border:none; cursor:pointer; color:rgba(120,200,255,0.7); font-size:13px; }
-  .tp-x:hover { color:#fff; }
-  .tp-sec { padding: 9px 14px 3px; font-size: 9px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(80,200,255,0.38); font-weight:500; }
-  .tp-row { padding: 5px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-  .tp-lbl { font-size: 11px; color: rgba(200,230,255,0.7); flex:1; }
-  .tp-col { width:26px; height:18px; border-radius:3px; border:1px solid rgba(80,200,255,0.3); cursor:pointer; }
-  .tp-sel {
-    background: rgba(80,200,255,0.07); border: 1px solid rgba(80,200,255,0.18);
-    color: rgba(200,230,255,0.8); font-size:10px; padding:3px 5px;
-    font-family:'Space Grotesk',sans-serif; cursor:pointer; flex:1; max-width:115px;
-  }
-  .tp-rng { flex:1; accent-color:#50C8FF; }
-  .tp-tog {
-    width:30px; height:17px; border-radius:9px; border:none; cursor:pointer;
-    position:relative; transition:background 0.2s; flex-shrink:0;
-  }
-  .tp-tog-t {
-    position:absolute; top:2px; width:13px; height:13px;
-    border-radius:50%; background:#fff; transition:left 0.2s;
-  }
+/* ── SIDEBAR ─────────────────────────────────────────── */
+.sidebar {
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 10px;
+  gap: 4px;
+  overflow-y: auto;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.nav-item:hover { background: var(--s2); color: var(--text); }
+.nav-item.active {
+  background: var(--adim);
+  color: var(--accent2);
+  border-color: rgba(108,99,255,0.2);
+  font-weight: 500;
+}
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 4px;
+}
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 12px 2px;
+}
 
-  .dl-btn {
-    position: fixed; bottom: 14px; right: 14px; z-index: 9999;
-    background: rgba(80,200,255,0.1); border: 1px solid rgba(80,200,255,0.32);
-    color: rgba(200,240,255,0.88); font-family:'Space Mono',monospace;
-    font-size: 10px; letter-spacing:0.14em; text-transform:uppercase;
-    padding: 8px 16px; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.2s;
-  }
-  .dl-btn:hover { background:rgba(80,200,255,0.22); border-color:rgba(80,200,255,0.7); box-shadow:0 0 18px rgba(80,200,255,0.22); }
+/* ── MAIN ────────────────────────────────────────────── */
+.main {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCREENS ─────────────────────────────────────────── */
+.screen { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
+
+/* ── CHAT SCREEN ─────────────────────────────────────── */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.chat-area::-webkit-scrollbar { width: 4px; }
+.chat-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.chat-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  opacity: 0.7;
+  padding: 40px;
+  text-align: center;
+}
+.chat-welcome .w-icon { font-size: 36px; }
+.chat-welcome h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+.chat-welcome p { font-size: 13px; color: var(--muted); max-width: 320px; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+}
+.chip {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.chip:hover { color: var(--accent2); border-color: rgba(108,99,255,0.3); background: var(--adim); }
+
+/* messages */
+.msg { display: flex; flex-direction: column; gap: 3px; animation: fadeUp 0.22s ease; max-width: 78%; }
+.msg.user { align-self: flex-end; align-items: flex-end; }
+.msg.bot  { align-self: flex-start; align-items: flex-start; }
+.msg-label { font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.msg-bubble {
+  padding: 11px 15px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.msg.user .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+.msg.bot  .msg-bubble { background: var(--s2); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+.msg.bot.thinking .msg-bubble { color: var(--muted); font-style: italic; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* input bar */
+.chat-input-bar {
+  border-top: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: var(--s1);
+}
+.chat-input {
+  flex: 1;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  resize: none;
+  outline: none;
+  max-height: 120px;
+  min-height: 42px;
+  transition: border-color 0.18s;
+  line-height: 1.5;
+}
+.chat-input:focus { border-color: rgba(108,99,255,0.4); }
+.chat-input::placeholder { color: var(--muted); }
+.send-btn {
+  width: 42px; height: 42px;
+  background: var(--accent);
+  border: none; border-radius: var(--r);
+  color: #fff; font-size: 17px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s; flex-shrink: 0;
+}
+.send-btn:hover:not(:disabled) { background: var(--accent2); transform: scale(1.04); }
+.send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── TASKS SCREEN ────────────────────────────────────── */
+.tasks-header {
+  padding: 20px 28px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tasks-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+.tasks-actions { margin-left: auto; display: flex; gap: 8px; }
+.btn-sm {
+  padding: 7px 14px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+}
+.btn-primary-sm { background: var(--accent); color: #fff; }
+.btn-primary-sm:hover { background: var(--accent2); }
+.btn-ghost-sm { background: var(--s2); color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost-sm:hover { color: var(--text); }
+
+.tasks-filters {
+  padding: 12px 28px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--s2);
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.filter-pill.active, .filter-pill:hover {
+  background: var(--adim);
+  color: var(--accent2);
+  border-color: rgba(108,99,255,0.25);
+}
+
+.tasks-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 28px 24px;
+}
+.tasks-body::-webkit-scrollbar { width: 4px; }
+.tasks-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.task-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  transition: border-color 0.15s;
+  animation: fadeUp 0.2s ease;
+}
+.task-card:hover { border-color: var(--border2); }
+
+.task-priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.task-name { font-size: 13.5px; font-weight: 500; }
+.task-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.task-status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.task-due { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+.tasks-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.tasks-empty span { font-size: 32px; display: block; margin-bottom: 10px; }
+.tasks-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+/* ── ADD TASK SCREEN ─────────────────────────────────── */
+.form-screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+}
+.form-screen::-webkit-scrollbar { width: 4px; }
+.form-screen::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.form-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+.form-grid { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 11px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 13px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.18s;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(108,99,255,0.4); }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+.field select option { background: #1a1a25; }
+.field textarea { resize: vertical; min-height: 72px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.form-actions { display: flex; gap: 10px; margin-top: 8px; }
+.btn-submit {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 11px 24px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-submit:hover:not(:disabled) { background: var(--accent2); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 11px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-cancel:hover { color: var(--text); }
+
+.status-msg {
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  margin-top: 10px;
+  display: none;
+}
+.status-msg.show { display: block; }
+.status-msg.success { background: rgba(45,212,160,0.1); border: 1px solid rgba(45,212,160,0.2); color: var(--success); }
+.status-msg.error   { background: rgba(240,96,96,0.1); border: 1px solid rgba(240,96,96,0.2); color: var(--danger); }
+.status-msg.info    { background: var(--adim); border: 1px solid rgba(108,99,255,0.2); color: var(--accent2); }
+
+/* ── CONFIG MODAL ────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--s1);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; margin-bottom: 20px; }
+.modal-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.modal-field label { font-size: 11px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: var(--muted); }
+.modal-field input {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 9px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+}
+.modal-field input:focus { border-color: rgba(108,99,255,0.4); }
+.modal-field small { font-size: 11px; color: var(--muted); }
+.modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+.modal-save {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 9px 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 9px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useRef, useCallback } = React;
+<div class="shell">
 
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accentColor": "#50C8FF",
-  "secondAccent": "#A855F7",
-  "bgDepth": "deep",
-  "showTagline": true,
-  "nodeCount": 50,
-  "showHexGrid": true,
-  "glowIntensity": "medium",
-  "logoStyle": "full"
-}/*EDITMODE-END*/;
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-logo">🤖</div>
+    <span class="topbar-name">ILMU Claw</span>
+    <span class="topbar-tag">YTLCC</span>
+    <div class="topbar-spacer"></div>
+    <button class="config-btn" onclick="openConfig()">⚙ Configure ILMU Claw</button>
+  </header>
 
-/* ─── Tweaks Panel ─────────────────────────────────────────────────────────── */
-function TweaksPanel({ tweaks, set, visible, onClose }) {
-  useEffect(() => {
-    const h = e => {
-      if (e.data?.type === '__activate_edit_mode')   onClose(false);
-      if (e.data?.type === '__deactivate_edit_mode') onClose(true);
-    };
-    window.addEventListener('message', h);
-    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-    return () => window.removeEventListener('message', h);
-  }, []);
-
-  if (!visible) return null;
-
-  const Toggle = ({ id }) => (
-    <button className="tp-tog"
-      style={{ background: tweaks[id] ? 'rgba(80,200,255,0.58)' : 'rgba(80,200,255,0.14)' }}
-      onClick={() => set(id, !tweaks[id])}>
-      <div className="tp-tog-t" style={{ left: tweaks[id] ? 15 : 2 }}></div>
-    </button>
-  );
-
-  return (
-    <div className="tp">
-      <div className="tp-head">
-        Tweaks
-        <button className="tp-x" onClick={() => { onClose(true); window.parent.postMessage({type:'__edit_mode_dismissed'},'*'); }}>✕</button>
-      </div>
-
-      <div className="tp-sec">Colors</div>
-      <div className="tp-row"><span className="tp-lbl">Primary</span>
-        <input type="color" className="tp-col" value={tweaks.accentColor} onChange={e=>set('accentColor',e.target.value)}/>
-      </div>
-      <div className="tp-row"><span className="tp-lbl">Secondary</span>
-        <input type="color" className="tp-col" value={tweaks.secondAccent} onChange={e=>set('secondAccent',e.target.value)}/>
-      </div>
-
-      <div className="tp-sec">Background</div>
-      <div className="tp-row"><span className="tp-lbl">Depth</span>
-        <select className="tp-sel" value={tweaks.bgDepth} onChange={e=>set('bgDepth',e.target.value)}>
-          <option value="ocean">Ocean</option>
-          <option value="deep">Space Dark</option>
-          <option value="midnight">Midnight</option>
-        </select>
-      </div>
-      <div className="tp-row"><span className="tp-lbl">Hex Grid</span><Toggle id="showHexGrid"/></div>
-      <div className="tp-row"><span className="tp-lbl">Glow</span>
-        <select className="tp-sel" value={tweaks.glowIntensity} onChange={e=>set('glowIntensity',e.target.value)}>
-          <option value="low">Subtle</option>
-          <option value="medium">Medium</option>
-          <option value="high">Intense</option>
-        </select>
-      </div>
-      <div className="tp-row"><span className="tp-lbl">Nodes ({tweaks.nodeCount})</span>
-        <input type="range" className="tp-rng" min={15} max={100} step={5}
-          value={tweaks.nodeCount} onChange={e=>set('nodeCount',Number(e.target.value))}/>
-      </div>
-
-      <div className="tp-sec">Branding</div>
-      <div className="tp-row"><span className="tp-lbl">Style</span>
-        <select className="tp-sel" value={tweaks.logoStyle} onChange={e=>set('logoStyle',e.target.value)}>
-          <option value="full">Full</option>
-          <option value="minimal">Name only</option>
-        </select>
-      </div>
-      <div className="tp-row" style={{marginBottom:8}}><span className="tp-lbl">Tagline</span><Toggle id="showTagline"/></div>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <span class="nav-label">Menu</span>
+    <div class="nav-item active" onclick="showScreen('chat')" id="nav-chat">
+      <span class="nav-icon">💬</span> Ask ILMU Claw
     </div>
-  );
-}
+    <div class="nav-item" onclick="showScreen('tasks')" id="nav-tasks">
+      <span class="nav-icon">📋</span> View Tasks
+    </div>
+    <div class="nav-item" onclick="showScreen('add')" id="nav-add">
+      <span class="nav-icon">＋</span> Add Task
+    </div>
+    <div class="nav-divider"></div>
+    <span class="nav-label">Quick Ask</span>
+    <div class="nav-item" onclick="quickAsk('What tasks are blocked right now?')">
+      <span class="nav-icon">🔴</span> Blocked
+    </div>
+    <div class="nav-item" onclick="quickAsk('What is due this week?')">
+      <span class="nav-icon">📅</span> Due this week
+    </div>
+    <div class="nav-item" onclick="quickAsk('Give me a summary of all tasks by team')">
+      <span class="nav-icon">📊</span> Team summary
+    </div>
+    <div class="nav-item" onclick="quickAsk('What is currently in progress?')">
+      <span class="nav-icon">⚡</span> In progress
+    </div>
+  </nav>
 
-/* ─── Canvas ───────────────────────────────────────────────────────────────── */
-function NeuralCanvas({ width, height, tweaks }) {
-  const ref = useRef(null);
-  const raf = useRef(null);
-  const h2r = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  <!-- MAIN AREA -->
+  <main class="main">
 
-  useEffect(() => {
-    if (!width || !height) return;
-    const cv = ref.current;
-    const cx = cv.getContext('2d');
-    cv.width = width; cv.height = height;
-
-    const a1 = h2r(tweaks.accentColor);
-    const a2 = h2r(tweaks.secondAccent);
-    const gm = tweaks.glowIntensity==='low'?.5:tweaks.glowIntensity==='high'?1.8:1;
-    const N  = tweaks.nodeCount;
-
-    const nodes = Array.from({length:N}, ()=>({
-      x: Math.random()*width, y: Math.random()*height,
-      vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
-      r: Math.random()*2+.8, phase:Math.random()*Math.PI*2, spd:Math.random()*.02+.005,
-    }));
-
-    const hexes = [];
-    if (tweaks.showHexGrid) {
-      const hr=55, hw=hr*2, hh=Math.sqrt(3)*hr;
-      for (let row=-2;row<height/hh+2;row++)
-        for (let col=-2;col<width/hw+2;col++)
-          hexes.push({x:col*hw*.75, y:row*hh+(col%2===0?0:hh/2), r:hr,
-            al:Math.random()*.055+.01, phase:Math.random()*Math.PI*2});
-    }
-
-    function hp(x,y,r) {
-      cx.beginPath();
-      for (let i=0;i<6;i++) {
-        const a=(Math.PI/3)*i-Math.PI/6;
-        i===0?cx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a)):cx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));
-      }
-      cx.closePath();
-    }
-
-    let t=0;
-    function draw() {
-      cx.clearRect(0,0,width,height);
-      // BG gradient
-      const bg=cx.createRadialGradient(width*.5,height*.4,0,width*.5,height*.5,height*.7);
-      const d=tweaks.bgDepth;
-      bg.addColorStop(0, d==='midnight'?'rgb(15,5,30)':d==='ocean'?'rgb(5,18,40)':'rgb(8,14,35)');
-      bg.addColorStop(.5,d==='midnight'?'rgb(8,3,20)':d==='ocean'?'rgb(3,10,28)':'rgb(5,8,22)');
-      bg.addColorStop(1, d==='midnight'?'rgb(2,1,8)':d==='ocean'?'rgb(1,5,15)':'rgb(2,3,10)');
-      cx.fillStyle=bg; cx.fillRect(0,0,width,height);
-
-      // Nebula blobs
-      [[width*.15,height*.25,width*.6,a1],[width*.85,height*.7,width*.5,a2],[width*.5,height*.5,width*.4,a1]].forEach(([bx,by,br,c])=>{
-        const g=cx.createRadialGradient(bx,by,0,bx,by,br);
-        g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${.07*gm})`);
-        g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
-        cx.fillStyle=g; cx.beginPath(); cx.arc(bx,by,br,0,Math.PI*2); cx.fill();
-      });
-
-      // Hex grid
-      hexes.forEach(h=>{
-        const al=(Math.sin(t*.3+h.phase)*.5+.5)*h.al;
-        cx.strokeStyle=`rgba(${a1[0]},${a1[1]},${a1[2]},${al})`; cx.lineWidth=.4;
-        hp(h.x,h.y,h.r); cx.stroke();
-      });
-
-      // Connections
-      const md=150;
-      for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
-        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<md){
-          const al=(1-dist/md)*.3*gm;
-          const m=(nodes[i].phase+nodes[j].phase)/(Math.PI*4);
-          cx.strokeStyle=`rgba(${Math.round(a1[0]*(1-m)+a2[0]*m)},${Math.round(a1[1]*(1-m)+a2[1]*m)},${Math.round(a1[2]*(1-m)+a2[2]*m)},${al})`;
-          cx.lineWidth=(1-dist/md);
-          cx.beginPath(); cx.moveTo(nodes[i].x,nodes[i].y); cx.lineTo(nodes[j].x,nodes[j].y); cx.stroke();
-        }
-      }
-
-      // Core glow (centered upper-half)
-      const ccx=width*.5, ccy=height*.38, cr=80+Math.sin(t*.5)*10;
-      const cg=cx.createRadialGradient(ccx,ccy,0,ccx,ccy,cr);
-      cg.addColorStop(0,`rgba(${a1[0]},${a1[1]},${a1[2]},${.2*gm})`);
-      cg.addColorStop(.4,`rgba(${a1[0]},${a1[1]},${a1[2]},${.07*gm})`);
-      cg.addColorStop(1,`rgba(${a1[0]},${a1[1]},${a1[2]},0)`);
-      cx.fillStyle=cg; cx.beginPath(); cx.arc(ccx,ccy,cr,0,Math.PI*2); cx.fill();
-
-      // Nodes
-      nodes.forEach(n=>{
-        const pulse=Math.sin(t*n.spd*60+n.phase);
-        const r=n.r+pulse*.7, al=.5+pulse*.28;
-        const m=n.phase/(Math.PI*2);
-        const nr=Math.round(a1[0]*(1-m)+a2[0]*m), ng=Math.round(a1[1]*(1-m)+a2[1]*m), nb=Math.round(a1[2]*(1-m)+a2[2]*m);
-        const ng2=cx.createRadialGradient(n.x,n.y,0,n.x,n.y,r*5);
-        ng2.addColorStop(0,`rgba(${nr},${ng},${nb},${.14*gm})`);
-        ng2.addColorStop(1,`rgba(${nr},${ng},${nb},0)`);
-        cx.fillStyle=ng2; cx.beginPath(); cx.arc(n.x,n.y,r*5,0,Math.PI*2); cx.fill();
-        cx.fillStyle=`rgba(${nr},${ng},${nb},${al})`; cx.beginPath(); cx.arc(n.x,n.y,r,0,Math.PI*2); cx.fill();
-        n.x+=n.vx; n.y+=n.vy;
-        if(n.x<0)n.x=width; if(n.x>width)n.x=0;
-        if(n.y<0)n.y=height; if(n.y>height)n.y=0;
-      });
-
-      t+=.016;
-      raf.current=requestAnimationFrame(draw);
-    }
-    draw();
-    return ()=>cancelAnimationFrame(raf.current);
-  }, [width, height, JSON.stringify(tweaks)]);
-
-  return <canvas ref={ref} style={{position:'absolute',top:0,left:0}}/>;
-}
-
-/* ─── Overlay ──────────────────────────────────────────────────────────────── */
-function Overlay({ width, height, tweaks }) {
-  // Portrait scale: reference 390×844
-  const s  = Math.min(width/390, height/844);
-  const ac = tweaks.accentColor;
-  const a2 = tweaks.secondAccent;
-  const rR = 80*s; // ring radius
-
-  return (
-    <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',
-      alignItems:'center',justifyContent:'center',pointerEvents:'none',zIndex:10}}>
-
-      {/* Corners */}
-      {[['tl',{top:0,left:0}],['tr',{top:0,right:0}],['bl',{bottom:0,left:0}],['br',{bottom:0,right:0}]].map(([cls,pos])=>(
-        <div key={cls} className={`corner ${cls}`} style={{...pos,width:36*s,height:36*s}}></div>
-      ))}
-
-      {/* Logo block */}
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0,marginTop:-40*s}}>
-
-        {/* Rings + hex icon */}
-        <div style={{position:'relative',width:rR*2,height:rR*2,display:'flex',
-          alignItems:'center',justifyContent:'center',marginBottom:24*s}}>
-          <div className="ring" style={{width:rR*2,height:rR*2,borderColor:`${ac}20`,animationDuration:'28s'}}></div>
-          <div className="ring" style={{width:rR*1.55,height:rR*1.55,borderColor:`${ac}3a`,
-            borderStyle:'dashed',animationDuration:'18s',animationDirection:'reverse'}}></div>
-          <div className="ring" style={{width:rR,height:rR,borderColor:`${ac}65`,animationDuration:'12s'}}></div>
-
-          <svg width={rR*.55} height={rR*.55} viewBox="0 0 80 80" style={{position:'relative',zIndex:2}}>
-            <defs>
-              <radialGradient id="hg" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor={ac} stopOpacity="0.9"/>
-                <stop offset="100%" stopColor={a2} stopOpacity="0.6"/>
-              </radialGradient>
-            </defs>
-            <polygon points="40,4 74,22 74,58 40,76 6,58 6,22" fill="none" stroke={ac} strokeWidth="1.5" strokeOpacity="0.5"/>
-            <polygon points="40,18 60,29 60,51 40,62 20,51 20,29" fill="url(#hg)" fillOpacity="0.12" stroke={ac} strokeWidth="1" strokeOpacity="0.85"/>
-            <circle cx="40" cy="40" r="5" fill={ac} fillOpacity="0.95"/>
-            {[[40,18],[60,29],[60,51],[40,62],[20,51],[20,29]].map(([x,y],i)=>(
-              <g key={i}>
-                <line x1={x} y1={y} x2="40" y2="40" stroke={ac} strokeWidth="0.8" strokeOpacity="0.4"/>
-                <circle cx={x} cy={y} r="2.2" fill={i%2===0?ac:a2} fillOpacity="0.85"/>
-              </g>
-            ))}
-          </svg>
-        </div>
-
-        {/* ILMU BOT */}
-        <div style={{
-          fontFamily:"'Space Grotesk', sans-serif", fontWeight:700,
-          fontSize: 52*s, letterSpacing:'0.16em', textTransform:'uppercase',
-          lineHeight:1, whiteSpace:'nowrap',
-          paddingBottom: 6*s, paddingLeft: 4*s, paddingRight: 4*s,
-          background:'linear-gradient(135deg,#fff 0%,rgba(120,220,255,0.92) 50%,rgba(180,120,255,0.88) 100%)',
-          WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-          filter:`drop-shadow(0 0 ${20*s}px rgba(80,200,255,0.5))`,
-        }}>ILMU BOT</div>
-
-        {/* Subtitle */}
-        {tweaks.logoStyle !== 'minimal' && (
-          <div style={{
-            fontFamily:"'Space Mono', monospace", fontSize:11*s, letterSpacing:'0.35em',
-            textTransform:'uppercase', color:'rgba(120,200,255,0.7)',
-            filter:`drop-shadow(0 0 ${6*s}px rgba(80,200,255,0.35))`,
-            marginTop: 10*s, whiteSpace:'nowrap',
-          }}>AI&nbsp;&nbsp;Assistant&nbsp;&nbsp;for&nbsp;&nbsp;Teams</div>
-        )}
-
-        {/* Tagline */}
-        {tweaks.showTagline && (
-          <div style={{display:'flex',alignItems:'center',gap:10*s,marginTop:18*s,width:'100%',justifyContent:'center'}}>
-            <div style={{width:40*s,height:1,background:`linear-gradient(to right,transparent,${ac}55)`,flexShrink:0}}></div>
-            <div style={{
-              fontFamily:"'Space Grotesk',sans-serif", fontWeight:300, fontSize:9*s,
-              letterSpacing:'0.11em', textTransform:'uppercase', color:'rgba(200,230,255,0.38)',
-              whiteSpace:'nowrap',
-            }}>Intelligent&nbsp;·&nbsp;Adaptive&nbsp;·&nbsp;Always On</div>
-            <div style={{width:40*s,height:1,background:`linear-gradient(to left,transparent,${ac}55)`,flexShrink:0}}></div>
+    <!-- ── CHAT SCREEN ── -->
+    <div class="screen active" id="screen-chat">
+      <div class="chat-area" id="chat-area">
+        <div class="chat-welcome" id="chat-welcome">
+          <span class="w-icon">🤖</span>
+          <h2>Ask ILMU Claw anything</h2>
+          <p>I can answer questions about your Notion tasks, projects, blockers, and team workload.</p>
+          <div class="chips">
+            <div class="chip" onclick="quickAsk('What tasks are blocked right now?')">🔴 What\'s blocked?</div>
+            <div class="chip" onclick="quickAsk('What is due this week?')">📅 Due this week</div>
+            <div class="chip" onclick="quickAsk('Give me a summary of all tasks by team')">📊 Team summary</div>
+            <div class="chip" onclick="quickAsk('What is currently in progress?')">⚡ In progress</div>
           </div>
-        )}
-      </div>
-
-      {/* Bottom bar */}
-      <div style={{
-        position:'absolute', bottom:0, left:0, right:0,
-        display:'flex', alignItems:'center', justifyContent:'space-between',
-        padding:`${8*s}px ${20*s}px`,
-        borderTop:'1px solid rgba(80,200,255,0.1)',
-        background:'linear-gradient(to top, rgba(0,5,20,0.65) 0%, transparent 100%)',
-      }}>
-        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.12em',
-          textTransform:'uppercase',color:'rgba(120,200,255,0.38)'}}>
-          <span className="status-dot" style={{width:5*s,height:5*s}}></span>Online
         </div>
-        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.1em',
-          textTransform:'uppercase',color:'rgba(120,200,255,0.28)'}}>ILMU Bot · AI</div>
-        <div style={{fontFamily:"'Space Mono',monospace",fontSize:8*s,letterSpacing:'0.1em',
-          textTransform:'uppercase',color:'rgba(120,200,255,0.28)'}}>v2.0 · 2026</div>
+      </div>
+      <div class="chat-input-bar">
+        <textarea class="chat-input" id="chat-input" placeholder="Ask about tasks, projects, blockers…" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
+          oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendChat()">↑</button>
       </div>
     </div>
-  );
-}
 
-/* ─── App ──────────────────────────────────────────────────────────────────── */
-function App() {
-  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
-  const [panel,  setPanel]  = useState(false);
-  const [dims,   setDims]   = useState({w:390,h:844});
-
-  const set = (k, v) => setTweaks(prev => {
-    const next = {...prev, [k]:v};
-    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}},'*');
-    return next;
-  });
-
-  useEffect(() => {
-    const onMsg = e => {
-      if (e.data?.type==='__activate_edit_mode')   setPanel(true);
-      if (e.data?.type==='__deactivate_edit_mode') setPanel(false);
-    };
-    window.addEventListener('message', onMsg);
-    window.parent.postMessage({type:'__edit_mode_available'},'*');
-    return () => window.removeEventListener('message', onMsg);
-  }, []);
-
-  useEffect(() => {
-    const upd = () => {
-      const vw=window.innerWidth, vh=window.innerHeight;
-      // Portrait 9:19.5
-      const ar = 9/19.5;
-      let w,h;
-      if (vw/vh > ar) { h=vh; w=h*ar; } else { w=vw; h=w/ar; }
-      setDims({w:Math.round(w), h:Math.round(h)});
-    };
-    upd();
-    window.addEventListener('resize', upd);
-    return () => window.removeEventListener('resize', upd);
-  }, []);
-
-  const download = useCallback(() => {
-    const cv = document.querySelector('canvas');
-    if (!cv) return;
-    const W=1080, H=2340;
-    const out = document.createElement('canvas');
-    out.width=W; out.height=H;
-    const ctx = out.getContext('2d');
-    ctx.drawImage(cv, 0, 0, W, H);
-    // Text
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    const gr=ctx.createLinearGradient(W*.2,H*.5,W*.8,H*.5);
-    gr.addColorStop(0,'#fff'); gr.addColorStop(.5,'rgba(120,220,255,.95)'); gr.addColorStop(1,'rgba(180,120,255,.9)');
-    ctx.font='bold 144px Arial'; ctx.fillStyle=gr;
-    ctx.shadowColor=tweaks.accentColor; ctx.shadowBlur=40;
-    ctx.fillText('ILMU BOT', W*.5, H*.42);
-    ctx.font='38px Arial'; ctx.fillStyle='rgba(120,200,255,.7)'; ctx.shadowBlur=12;
-    ctx.fillText('AI  ASSISTANT  FOR  TEAMS', W*.5, H*.47);
-    out.toBlob(blob=>{
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a'); a.href=url; a.download='ILMU-Bot-Background.png'; a.click();
-      URL.revokeObjectURL(url);
-    },'image/png');
-  }, [tweaks.accentColor]);
-
-  return (
-    <div style={{width:'100vw',height:'100vh',background:'#000',display:'flex',
-      alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
-
-      <div style={{position:'relative',width:dims.w,height:dims.h,flexShrink:0,overflow:'hidden'}}>
-        <NeuralCanvas width={dims.w} height={dims.h} tweaks={tweaks}/>
-        <Overlay      width={dims.w} height={dims.h} tweaks={tweaks}/>
+    <!-- ── TASKS SCREEN ── -->
+    <div class="screen" id="screen-tasks">
+      <div class="tasks-header">
+        <span class="tasks-title">Notion Tasks</span>
+        <div class="tasks-actions">
+          <button class="btn-sm btn-ghost-sm" onclick="loadTasks()">↻ Refresh</button>
+          <button class="btn-sm btn-primary-sm" onclick="showScreen('add')">＋ Add Task</button>
+        </div>
       </div>
-
-      <TweaksPanel tweaks={tweaks} set={set} visible={panel} onClose={hide=>setPanel(!hide)}/>
-      <button className="dl-btn" onClick={download}>↓ Export PNG</button>
+      <div class="tasks-filters" id="tasks-filters">
+        <div class="filter-pill active" onclick="filterTasks('all', this)">All</div>
+        <div class="filter-pill" onclick="filterTasks('In Progress', this)">In Progress</div>
+        <div class="filter-pill" onclick="filterTasks('Not Started', this)">Not Started</div>
+        <div class="filter-pill" onclick="filterTasks('Blocked', this)">Blocked</div>
+        <div class="filter-pill" onclick="filterTasks('Done', this)">Done</div>
+      </div>
+      <div class="tasks-body" id="tasks-body">
+        <div class="tasks-loading">Click Refresh to load tasks from Notion</div>
+      </div>
     </div>
-  );
+
+    <!-- ── ADD TASK SCREEN ── -->
+    <div class="screen" id="screen-add">
+      <div class="form-screen">
+        <div class="form-title">Add Task to Notion</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Task Name *</label>
+            <input type="text" id="f-name" placeholder="e.g. LEAD 2026 speaker confirmation" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Priority</label>
+              <select id="f-priority">
+                <option value="🔴 High">🔴 High</option>
+                <option value="🟡 Medium" selected>🟡 Medium</option>
+                <option value="🟢 Low">🟢 Low</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select id="f-status">
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress" selected>In Progress</option>
+                <option value="Blocked">Blocked</option>
+                <option value="Review">Review</option>
+                <option value="Done">Done</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Team</label>
+              <select id="f-team">
+                <option value="Brand">Brand</option>
+                <option value="Digital">Digital</option>
+                <option value="Design">Design</option>
+                <option value="Comms">Comms</option>
+                <option value="Production">Production</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Due Date</label>
+              <input type="date" id="f-due" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Project</label>
+            <input type="text" id="f-project" placeholder="e.g. Founders Day 2026" />
+          </div>
+          <div class="field">
+            <label>PIC (Person in Charge)</label>
+            <input type="text" id="f-pic" placeholder="e.g. Bradley" />
+          </div>
+          <div class="field">
+            <label>Notes / Next Action</label>
+            <textarea id="f-notes" placeholder="What needs to happen next?"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn-submit" id="submit-btn" onclick="submitTask()">Submit to Notion</button>
+            <button class="btn-cancel" onclick="showScreen('chat')">Cancel</button>
+          </div>
+          <div class="status-msg" id="form-status"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── CONFIG MODAL ── -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal">
+    <div class="modal-title">⚙ Configure ILMU Claw</div>
+
+    <div style="padding:12px 14px;background:var(--s2);border-radius:var(--r-sm);font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.7;">
+      ✅ Worker URL and Database ID are already set.<br>
+      You only need to enter 2 keys below.
+    </div>
+
+    <div class="modal-field">
+      <label>ILMU Claw API Key</label>
+      <input type="password" id="cfg-anthropic" placeholder="sk-..." />
+      <small>Get from <strong style="color:var(--text)">console.ilmu.ai</strong> → Dashboard → API Keys</small>
+    </div>
+
+    <div class="modal-field">
+      <label>Notion Integration Token</label>
+      <input type="password" id="cfg-notion" placeholder="ntn_..." />
+      <small>Go to <strong style="color:var(--text)">notion.so/my-integrations</strong> → YTLCC Power Automate → Regenerate</small>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-save" onclick="saveConfig()">Save & Connect</button>
+      <button class="modal-cancel" onclick="closeConfig()">Cancel</button>
+    </div>
+
+    <div style="margin-top:16px;font-size:11px;color:var(--muted);">
+      🔒 Keys are saved in your browser only. Nobody else can see them.
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────
+let CFG = { anthropic: '', notion: '', dbid: '6807054f444c4cdb973ed3a2b81cf6b9', proxy: 'https://ilmu-proxy.jiawei9466.workers.dev' };
+let allTasks = [];
+let chatHistory = [];
+const NOTION_SYSTEM = `You are ILMU Claw, a smart AI department assistant for YTLCC (YTL Creative Communications), a 30-person creative department. You help Bradley Tan, Senior Brand Executive, manage his team's tasks, projects, and workload.
+
+When answering questions about tasks, be specific, actionable, and concise. Organise your answers clearly. If tasks data is provided, analyse it properly.
+
+Key teams: Brand, Digital, Design, Comms, Production.
+Key projects: Audio Guided Tour, Founders' Day, BTRT 2026, Journey, LEAD 2026, UDE Timeline.
+Key people: Bradley (manager), Francis Cobb (Digital), Joelle Chew (Comms), Eugene and Rachel (Design).`;
+
+// ── LOAD CONFIG ───────────────────────────────────────────────────
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem('ilmu_cfg');
+    if (saved) CFG = { ...CFG, ...JSON.parse(saved) };
+  } catch(e) {}
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+function saveConfig() {
+  CFG.anthropic = document.getElementById('cfg-anthropic').value.trim();
+  CFG.notion    = document.getElementById('cfg-notion').value.trim();
+  localStorage.setItem('ilmu_cfg', JSON.stringify(CFG));
+  closeConfig();
+  showToast('✅ Connected! Try asking ILMU something.');
+}
+
+function openConfig() {
+  document.getElementById('cfg-anthropic').value = CFG.anthropic;
+  document.getElementById('cfg-notion').value    = CFG.notion;
+  document.getElementById('config-modal').classList.add('open');
+}
+function closeConfig() { document.getElementById('config-modal').classList.remove('open'); }
+
+// ── NAVIGATION ───────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  if (name === 'tasks') loadTasks();
+}
+
+// ── CHAT ─────────────────────────────────────────────────────────
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function addMsg(role, text) {
+  document.getElementById('chat-welcome')?.remove();
+  const area = document.getElementById('chat-area');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  wrap.innerHTML = `
+    <div class="msg-label">${role === 'user' ? 'You' : 'ILMU Claw'}</div>
+    <div class="msg-bubble">${text}</div>`;
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+  return wrap;
+}
+
+function quickAsk(q) {
+  showScreen('chat');
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if (!q) return;
+  if (!CFG.anthropic) { openConfig(); return; }
+
+  addMsg('user', q);
+  chatHistory.push({ role: 'user', content: q });
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  const thinking = addMsg('bot thinking', '⏳ Thinking…');
+
+  try {
+    // Fetch Notion tasks to give Claude context
+    let taskContext = '';
+    if (CFG.notion && CFG.dbid) {
+      try {
+        const tasks = await fetchNotionTasks();
+        if (tasks.length > 0) {
+          taskContext = '\n\nCurrent Notion task data:\n' + tasks.map(t =>
+            `- [${t.status}] ${t.name} | PIC: ${t.pic} | Project: ${t.project} | Priority: ${t.priority} | Due: ${t.due}`
+          ).join('\n');
+        }
+      } catch(e) { /* continue without task data */ }
+    }
+
+    const systemMsg = NOTION_SYSTEM + taskContext;
+
+    const res = await fetch('https://api.ilmu.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${CFG.anthropic}`
+      },
+      body: JSON.stringify({
+        model: 'nemo-super',
+        max_tokens: 1024,
+        messages: [
+          { role: 'system', content: systemMsg },
+          ...chatHistory
+        ]
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || 'Sorry, I couldn\'t get a response.';
+    chatHistory.push({ role: 'assistant', content: reply });
+
+    thinking.remove();
+    addMsg('bot', reply);
+
+  } catch(err) {
+    thinking.remove();
+    addMsg('bot', '⚠️ Error reaching ILMU Claw API. Check your API key in ⚙ Configure.');
+  }
+
+  document.getElementById('send-btn').disabled = false;
+}
+
+// ── NOTION TASKS ─────────────────────────────────────────────────
+async function fetchNotionTasks() {
+  const url = CFG.proxy
+    ? `${CFG.proxy}/notion/databases/${CFG.dbid}/query`
+    : `https://api.notion.com/v1/databases/${CFG.dbid}/query`;
+
+  const headers = CFG.proxy
+    ? { 'Content-Type': 'application/json' }
+    : {
+        'Authorization': `Bearer ${CFG.notion}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json'
+      };
+
+  const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify({ page_size: 100 }) });
+  if (!res.ok) throw new Error('Notion fetch failed: ' + res.status);
+  const data = await res.json();
+
+  return (data.results || []).map(p => {
+    const props = p.properties;
+    const getString = (prop) => {
+      if (!prop) return '';
+      if (prop.type === 'title') return prop.title?.[0]?.plain_text || '';
+      if (prop.type === 'rich_text') return prop.rich_text?.[0]?.plain_text || '';
+      if (prop.type === 'select') return prop.select?.name || '';
+      if (prop.type === 'status') return prop.status?.name || '';
+      if (prop.type === 'date') return prop.date?.start || '';
+      return '';
+    };
+    return {
+      id: p.id,
+      name:     getString(props['Task Name'] || props['Name'] || props['name']),
+      status:   getString(props['Status'] || props['status']),
+      priority: getString(props['Priority'] || props['priority']),
+      team:     getString(props['Team'] || props['Sub-team']),
+      pic:      getString(props['PIC'] || props['Assignee'] || props['Person']),
+      project:  getString(props['Project'] || props['project']),
+      due:      getString(props['Due Date'] || props['Due'] || props['due']),
+      notes:    getString(props['Next Action'] || props['Notes'])
+    };
+  }).filter(t => t.name);
+}
+
+let activeFilter = 'all';
+
+async function loadTasks() {
+  const body = document.getElementById('tasks-body');
+  body.innerHTML = '<div class="tasks-loading">⏳ Loading from Notion…</div>';
+
+  if (!CFG.notion || !CFG.dbid) {
+    body.innerHTML = '<div class="tasks-empty"><span>🔑</span>Add your Notion token in ⚙ Configure first.</div>';
+    return;
+  }
+
+  try {
+    allTasks = await fetchNotionTasks();
+    renderTasks();
+  } catch(e) {
+    body.innerHTML = `<div class="tasks-empty"><span>⚠️</span>Couldn't load tasks.<br><small style="font-size:11px">${e.message}</small></div>`;
+  }
+}
+
+function filterTasks(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
+
+function renderTasks() {
+  const body = document.getElementById('tasks-body');
+  const filtered = activeFilter === 'all' ? allTasks : allTasks.filter(t => t.status === activeFilter);
+
+  if (filtered.length === 0) {
+    body.innerHTML = '<div class="tasks-empty"><span>✅</span>No tasks found.</div>';
+    return;
+  }
+
+  const priorityColor = { '🔴 High': '#f06060', '🟡 Medium': '#f5a623', '🟢 Low': '#2dd4a0' };
+  const statusStyle = {
+    'In Progress': 'background:rgba(108,99,255,0.15);color:#9b8fff',
+    'Blocked':     'background:rgba(240,96,96,0.15);color:#f06060',
+    'Done':        'background:rgba(45,212,160,0.12);color:#2dd4a0',
+    'Not Started': 'background:rgba(255,255,255,0.06);color:rgba(237,237,245,0.5)',
+    'Review':      'background:rgba(245,166,35,0.15);color:#f5a623'
+  };
+
+  body.innerHTML = filtered.map(t => {
+    const dotColor = priorityColor[t.priority] || '#888';
+    const badge = statusStyle[t.status] || statusStyle['Not Started'];
+    const due = t.due ? new Date(t.due).toLocaleDateString('en-MY', { day:'numeric', month:'short' }) : '';
+    return `
+    <div class="task-card">
+      <div class="task-priority-dot" style="background:${dotColor}" title="${t.priority}"></div>
+      <div>
+        <div class="task-name">${t.name}</div>
+        <div class="task-meta">${[t.team, t.project, t.pic ? '👤 '+t.pic : ''].filter(Boolean).join(' · ')}</div>
+      </div>
+      <span class="task-status-badge" style="${badge}">${t.status}</span>
+      <span class="task-due">${due}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── ADD TASK ─────────────────────────────────────────────────────
+async function submitTask() {
+  const name  = document.getElementById('f-name').value.trim();
+  if (!name) { showFormStatus('error', '⚠️ Task name is required.'); return; }
+  if (!CFG.notion || !CFG.dbid) { openConfig(); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  showFormStatus('info', '⏳ Adding to Notion…');
+
+  const body = {
+    parent: { database_id: CFG.dbid },
+    properties: {
+      'Task Name': { title: [{ text: { content: name } }] },
+      'Status':    { status: { name: document.getElementById('f-status').value } },
+      'Priority':  { select: { name: document.getElementById('f-priority').value } },
+      'Team':      { select: { name: document.getElementById('f-team').value } },
+      'PIC':       { rich_text: [{ text: { content: document.getElementById('f-pic').value.trim() } }] },
+      'Project':   { select: { name: document.getElementById('f-project').value.trim() || 'Ad Hoc' } },
+      'Next Action': { rich_text: [{ text: { content: document.getElementById('f-notes').value.trim() } }] }
+    }
+  };
+
+  const due = document.getElementById('f-due').value;
+  if (due) body.properties['Due Date'] = { date: { start: due } };
+
+  try {
+    const url = CFG.proxy ? `${CFG.proxy}/notion/pages` : 'https://api.notion.com/v1/pages';
+    const headers = CFG.proxy
+      ? { 'Content-Type': 'application/json' }
+      : { 'Authorization': `Bearer ${CFG.notion}`, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json' };
+
+    const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+
+    if (res.ok) {
+      showFormStatus('success', '✅ Task added to Notion!');
+      ['f-name','f-project','f-pic','f-notes','f-due'].forEach(id => { document.getElementById(id).value = ''; });
+      setTimeout(() => showScreen('tasks'), 1800);
+    } else {
+      const err = await res.json();
+      showFormStatus('error', '❌ Notion error: ' + (err.message || res.status));
+    }
+  } catch(e) {
+    showFormStatus('error', '❌ Network error. Make sure your Proxy URL is set.');
+  }
+
+  btn.disabled = false; btn.textContent = 'Submit to Notion';
+}
+
+function showFormStatus(type, msg) {
+  const el = document.getElementById('form-status');
+  el.className = 'status-msg show ' + type;
+  el.textContent = msg;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--s3);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:var(--r-sm);font-size:13px;z-index:200;animation:fadeUp 0.2s ease';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.getElementById('f-due').valueAsDate = new Date();
+loadConfig();
+if (!CFG.anthropic) setTimeout(openConfig, 600);
 </script>
 </body>
 </html>
