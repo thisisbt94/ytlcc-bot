@@ -4,358 +4,234 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ILMU — YTLCC Visibility Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f5f4f1;
-    --surface: #ffffff;
-    --surface2: #f9f8f6;
-    --surface3: #f0efec;
-    --border: rgba(0,0,0,0.07);
-    --border2: rgba(0,0,0,0.13);
-    --text: #1a1916;
-    --text2: #6b6860;
-    --text3: #a8a69e;
-    --accent: #4f46e5;
-    --accent2: #6d64f5;
-    --accent-bg: rgba(79,70,229,0.07);
-    --green: #16a34a;
-    --green-bg: rgba(22,163,74,0.08);
-    --amber: #d97706;
-    --amber-bg: rgba(217,119,6,0.08);
-    --red: #dc2626;
-    --red-bg: rgba(220,38,38,0.08);
-    --blue: #2563eb;
-    --blue-bg: rgba(37,99,235,0.08);
-    --tag-brand: #4f46e5;
-    --tag-design: #9333ea;
-    --tag-comms: #0891b2;
-    --tag-digital: #16a34a;
-    --tag-production: #d97706;
+    --bg:#f5f4f1;--surface:#fff;--surface2:#f9f8f6;--surface3:#f0efec;
+    --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);
+    --text:#1a1916;--text2:#6b6860;--text3:#a8a69e;
+    --accent:#4f46e5;--accent2:#6d64f5;--accent-bg:rgba(79,70,229,0.07);
+    --green:#16a34a;--green-bg:rgba(22,163,74,0.08);
+    --amber:#d97706;--amber-bg:rgba(217,119,6,0.08);
+    --red:#dc2626;--red-bg:rgba(220,38,38,0.08);
+    --blue:#2563eb;--blue-bg:rgba(37,99,235,0.08);
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 14px; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{font-size:14px;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-  /* ── SETUP ── */
-  #setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .setup-card {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 16px;
-    padding: 40px;
-    width: 100%;
-    max-width: 480px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  }
-  .setup-logo { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px; }
-  .setup-logo span { color: var(--accent2); }
-  .setup-sub { font-size: 13px; color: var(--text2); margin-bottom: 28px; line-height: 1.5; }
-  .setup-section { margin-bottom: 24px; }
-  .setup-section-title {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text3); margin-bottom: 12px;
-    padding-bottom: 8px; border-bottom: 1px solid var(--border);
-  }
-  .setup-label { font-size: 12px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
-  .setup-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 10px 13px; font-size: 13px;
-    font-family: 'DM Mono', monospace; color: var(--text); outline: none;
-    margin-bottom: 12px; transition: border-color 0.2s;
-  }
-  .setup-input:focus { border-color: var(--accent); background: #fff; }
-  .setup-input::placeholder { color: var(--text3); }
-  .setup-select {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 10px 13px; font-size: 13px;
-    font-family: 'DM Sans', sans-serif; color: var(--text); outline: none;
-    margin-bottom: 12px; cursor: pointer; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6860' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 12px center;
-    transition: border-color 0.2s;
-  }
-  .setup-select:focus { border-color: var(--accent); }
-  .provider-note { font-size: 11px; color: var(--text3); line-height: 1.6; margin-bottom: 10px; }
-  .provider-note a { color: var(--accent2); text-decoration: none; }
-  .setup-btn {
-    width: 100%; background: var(--accent); color: #fff; border: none;
-    border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 500;
-    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s; margin-top: 4px;
-  }
-  .setup-btn:hover { background: #4338ca; }
-  .setup-footer { font-size: 11px; color: var(--text3); margin-top: 16px; line-height: 1.6; }
+  /* SETUP */
+  #setup{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .setup-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:36px;width:100%;max-width:440px;box-shadow:0 4px 24px rgba(0,0,0,0.06);}
+  .setup-logo{font-size:24px;font-weight:600;letter-spacing:-0.5px;margin-bottom:4px;}
+  .setup-logo span{color:var(--accent2);}
+  .setup-sub{font-size:12px;color:var(--text2);margin-bottom:24px;line-height:1.5;}
+  .setup-lbl{font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:500;}
+  .setup-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'DM Mono',monospace;color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;}
+  .setup-input:focus{border-color:var(--accent);background:#fff;}
+  .setup-input::placeholder{color:var(--text3);}
+  .setup-select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;margin-bottom:12px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236b6860' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;transition:border-color 0.2s;}
+  .setup-select:focus{border-color:var(--accent);}
+  .provider-note{font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:10px;}
+  .provider-note a{color:var(--accent2);text-decoration:none;}
+  .setup-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background 0.2s;margin-top:4px;}
+  .setup-btn:hover{background:#4338ca;}
+  .setup-footer{font-size:11px;color:var(--text3);margin-top:14px;line-height:1.6;}
+  .ilmu-note{background:var(--accent-bg);border:1px solid rgba(79,70,229,0.15);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--accent);line-height:1.6;margin-bottom:12px;}
 
-  /* ── MAIN APP ── */
-  #app { display: none; min-height: 100vh; }
-  .header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 0 24px; display: flex; align-items: center; justify-content: space-between;
-    height: 54px; position: sticky; top: 0; z-index: 100;
-  }
-  .header-left { display: flex; align-items: center; gap: 14px; }
-  .logo { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-  .logo span { color: var(--accent2); }
-  .logo-divider { width: 1px; height: 18px; background: var(--border2); }
-  .logo-sub { font-size: 12px; color: var(--text3); }
-  .sync-badge {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace;
-  }
-  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-  .header-right { display: flex; align-items: center; gap: 6px; }
-  .hbtn {
-    background: transparent; border: 1px solid var(--border2); border-radius: 7px;
-    color: var(--text2); font-size: 12px; font-family: 'DM Sans', sans-serif;
-    padding: 6px 12px; cursor: pointer; transition: all 0.15s; font-weight: 500;
-  }
-  .hbtn:hover { background: var(--surface3); color: var(--text); border-color: var(--border2); }
-  .hbtn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .hbtn-primary:hover { background: #4338ca; border-color: #4338ca; color: #fff; }
+  /* APP */
+  #app{display:none;min-height:100vh;}
+  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+  .hlogo{font-size:16px;font-weight:600;letter-spacing:-0.3px;}
+  .hlogo span{color:var(--accent2);}
+  .hlogo-sep{width:1px;height:16px;background:var(--border2);margin:0 12px;}
+  .hlogo-sub{font-size:11px;color:var(--text3);}
+  .sync-info{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:12px;}
+  .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+  .header-right{display:flex;gap:6px;}
+  .hbtn{background:transparent;border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;padding:5px 11px;cursor:pointer;transition:all 0.13s;font-weight:500;}
+  .hbtn:hover{background:var(--surface3);color:var(--text);}
+  .hbtn-accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .hbtn-accent:hover{background:#4338ca;border-color:#4338ca;color:#fff;}
 
   /* LAYOUT */
-  .main { display: grid; grid-template-columns: 1fr 320px; height: calc(100vh - 54px); }
-  .content { overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
-  .side { border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; background: var(--surface); }
+  .main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 52px);}
+  .content{overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;}
+  .side{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
 
-  /* STAT STRIP */
-  .stat-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .stat {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all 0.15s;
-  }
-  .stat:hover { border-color: var(--border2); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  .stat.active { border-color: var(--accent); background: var(--accent-bg); }
-  .stat-num { font-size: 24px; font-weight: 600; letter-spacing: -1px; line-height: 1.1; margin-bottom: 3px; }
-  .stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); font-weight: 500; }
-  .c-default .stat-num { color: var(--text); }
-  .c-red .stat-num { color: var(--red); }
-  .c-blue .stat-num { color: var(--blue); }
-  .c-green .stat-num { color: var(--green); }
-  .c-amber .stat-num { color: var(--amber); }
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all 0.13s;}
+  .stat:hover{border-color:var(--border2);box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .stat.active{border-color:var(--accent);background:var(--accent-bg);}
+  .stat-n{font-size:22px;font-weight:600;letter-spacing:-1px;line-height:1.1;margin-bottom:3px;}
+  .stat-l{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);font-weight:500;}
+  .cn .stat-n{color:var(--text);}
+  .cr .stat-n{color:var(--red);}
+  .cb .stat-n{color:var(--blue);}
+  .cg .stat-n{color:var(--green);}
+  .ca .stat-n{color:var(--amber);}
 
   /* FILTERS */
-  .filter-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .flbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; margin-right: 2px; }
-  .fchip {
-    font-size: 12px; padding: 4px 11px; border-radius: 20px;
-    border: 1px solid var(--border2); color: var(--text2); background: var(--surface);
-    cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; font-weight: 500;
-  }
-  .fchip:hover { background: var(--surface3); color: var(--text); }
-  .fchip.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
-  .fsearch {
-    margin-left: auto; background: var(--surface); border: 1px solid var(--border2);
-    border-radius: 7px; padding: 6px 12px; font-size: 12px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; outline: none; width: 180px; transition: border-color 0.2s;
-  }
-  .fsearch:focus { border-color: var(--accent); }
-  .fsearch::placeholder { color: var(--text3); }
+  .filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .flbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0;margin-right:2px;}
+  .fchip{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);background:var(--surface);cursor:pointer;transition:all 0.13s;font-family:'DM Sans',sans-serif;font-weight:500;}
+  .fchip:hover{background:var(--surface3);color:var(--text);}
+  .fchip.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+  .fsrch{margin-left:auto;background:var(--surface);border:1px solid var(--border2);border-radius:7px;padding:5px 11px;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;width:170px;transition:border-color 0.2s;}
+  .fsrch:focus{border-color:var(--accent);}
+  .fsrch::placeholder{color:var(--text3);}
 
   /* TABLE */
-  .tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .tbl-head { padding: 12px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .tbl-title { font-size: 13px; font-weight: 500; }
-  .tbl-count { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
-  table { width: 100%; border-collapse: collapse; }
-  thead th {
-    padding: 9px 14px; text-align: left; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text3); font-weight: 600;
-    background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap;
-  }
-  tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody tr.sel { background: var(--accent-bg); }
-  td { padding: 10px 14px; font-size: 13px; vertical-align: middle; }
-  .td-main { font-weight: 500; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .td-sub { font-size: 11px; color: var(--text2); margin-top: 1px; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .tbl-top{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .tbl-title{font-size:13px;font-weight:500;}
+  .tbl-cnt{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{padding:8px 13px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);font-weight:600;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;}
+  tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--surface2);}
+  tbody tr.sel{background:var(--accent-bg);}
+  td{padding:9px 13px;font-size:13px;vertical-align:middle;}
+  .td-m{font-weight:500;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .td-s{font-size:11px;color:var(--text2);margin-top:1px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+  .p-blocked{background:var(--red-bg);color:var(--red);}
+  .p-inprogress{background:var(--blue-bg);color:var(--blue);}
+  .p-review{background:var(--amber-bg);color:var(--amber);}
+  .p-done{background:var(--green-bg);color:var(--green);}
+  .p-other{background:rgba(0,0,0,0.05);color:var(--text3);}
+  .p-approved{background:var(--green-bg);color:#15803d;}
+  .pri{font-size:11px;font-weight:600;}
+  .ph{color:var(--red);}
+  .pm{color:var(--amber);}
+  .pl{color:var(--green);}
+  .ttag{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-right:2px;}
+  .t-Brand{background:rgba(79,70,229,0.1);color:#4f46e5;}
+  .t-Design{background:rgba(147,51,234,0.1);color:#9333ea;}
+  .t-Comms{background:rgba(8,145,178,0.1);color:#0891b2;}
+  .t-Digital{background:rgba(22,163,74,0.1);color:#16a34a;}
+  .t-Production{background:rgba(217,119,6,0.1);color:#d97706;}
+  .proj-lbl{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dt{font-size:11px;font-family:'DM Mono',monospace;}
+  .dt-over{color:var(--red);font-weight:500;}
+  .dt-soon{color:var(--amber);}
+  .dt-ok{color:var(--text2);}
+  .empty-r{text-align:center;padding:40px;color:var(--text3);font-size:13px;}
 
-  /* STATUS PILLS */
-  .pill { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.02em; }
-  .p-blocked { background: var(--red-bg); color: var(--red); }
-  .p-inprogress { background: var(--blue-bg); color: var(--blue); }
-  .p-review { background: var(--amber-bg); color: var(--amber); }
-  .p-done { background: var(--green-bg); color: var(--green); }
-  .p-ideation, .p-draft { background: rgba(0,0,0,0.05); color: var(--text3); }
-  .p-approved { background: var(--green-bg); color: #15803d; }
-  .p-onhold { background: var(--amber-bg); color: #b45309; }
+  /* SIDE */
+  .side-top{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .side-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+  .side-title{font-size:13px;font-weight:600;}
+  .side-title em{color:var(--accent2);font-style:normal;}
+  .live-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--green);font-weight:500;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .side-prov{font-size:11px;color:var(--text3);}
+  .qbtns{padding:9px 11px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:5px;flex-shrink:0;}
+  .qbtn{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 8px;font-size:11px;color:var(--text2);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;line-height:1.3;transition:all 0.12s;font-weight:500;}
+  .qbtn:hover{background:var(--surface3);color:var(--text);border-color:var(--border2);}
+  .qbtn-i{font-size:12px;display:block;margin-bottom:2px;}
+  .chat-msgs{flex:1;overflow-y:auto;padding:11px;display:flex;flex-direction:column;gap:9px;}
+  .msg{display:flex;flex-direction:column;gap:3px;}
+  .msg-role{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);font-weight:600;}
+  .msg-b{font-size:12px;line-height:1.6;padding:8px 10px;border-radius:9px;}
+  .msg-user .msg-b{background:var(--accent-bg);color:var(--text);border:1px solid rgba(79,70,229,0.15);}
+  .msg-ilmu .msg-b{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+  .msg-ilmu .msg-b strong{color:var(--accent);}
+  .typing{display:flex;gap:3px;padding:4px 0;align-items:center;}
+  .typing span{width:5px;height:5px;background:var(--text3);border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+  .typing span:nth-child(2){animation-delay:0.2s;}
+  .typing span:nth-child(3){animation-delay:0.4s;}
+  @keyframes blink{0%,80%,100%{opacity:0.25;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+  .chat-foot{padding:9px 11px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
+  .chat-in{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;resize:none;height:34px;transition:border-color 0.2s;}
+  .chat-in:focus{border-color:var(--accent);background:#fff;}
+  .chat-in::placeholder{color:var(--text3);}
+  .send-btn{background:var(--accent);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.13s;}
+  .send-btn:hover{background:#4338ca;}
+  .send-btn svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
 
-  /* PRIORITY */
-  .pri { font-size: 11px; font-weight: 600; }
-  .pri-h { color: var(--red); }
-  .pri-m { color: var(--amber); }
-  .pri-l { color: var(--green); }
+  /* DRAWER */
+  .drawer{display:none;position:fixed;top:52px;right:310px;width:320px;height:calc(100vh - 52px);background:var(--surface);border-left:1px solid var(--border2);overflow-y:auto;z-index:50;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,0.05);}
+  .drawer-close{float:right;background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text2);cursor:pointer;padding:3px 8px;font-size:11px;font-family:'DM Sans',sans-serif;}
+  .drawer-close:hover{background:var(--surface3);}
+  .drawer-title{font-size:14px;font-weight:600;margin:10px 0 13px;line-height:1.3;clear:both;}
+  .drow{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start;}
+  .dkey{font-size:11px;color:var(--text3);width:82px;flex-shrink:0;padding-top:1px;font-weight:500;}
+  .dval{font-size:12px;color:var(--text);flex:1;line-height:1.5;}
+  .dsec{margin-top:13px;padding-top:13px;border-top:1px solid var(--border);}
+  .dsec-title{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);font-weight:600;margin-bottom:6px;}
+  .blocker-box{background:var(--red-bg);border:1px solid rgba(220,38,38,0.18);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--red);line-height:1.5;}
+  .nextact-box{background:var(--blue-bg);border:1px solid rgba(37,99,235,0.13);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text);line-height:1.5;}
+  .brief-txt{font-size:12px;color:var(--text2);line-height:1.6;}
+  .dl{font-size:12px;color:var(--accent2);text-decoration:none;font-weight:500;}
+  .dl:hover{text-decoration:underline;}
 
-  /* TEAM TAGS */
-  .ttag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-right: 2px; }
-  .t-Brand { background: rgba(79,70,229,0.1); color: #4f46e5; }
-  .t-Design { background: rgba(147,51,234,0.1); color: #9333ea; }
-  .t-Comms { background: rgba(8,145,178,0.1); color: #0891b2; }
-  .t-Digital { background: rgba(22,163,74,0.1); color: #16a34a; }
-  .t-Production { background: rgba(217,119,6,0.1); color: #d97706; }
-
-  .proj-label { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dt { font-size: 11px; font-family: 'DM Mono', monospace; }
-  .dt-over { color: var(--red); font-weight: 500; }
-  .dt-soon { color: var(--amber); }
-  .dt-ok { color: var(--text2); }
-  .owner-cell { font-size: 12px; color: var(--text2); max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  .loading-cell { text-align: center; padding: 40px; color: var(--text3); }
-  .spinner { width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 6px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .empty-cell { text-align: center; padding: 48px; color: var(--text3); font-size: 13px; }
-
-  /* SIDE PANEL */
-  .side-top { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-  .side-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
-  .side-title { font-size: 14px; font-weight: 600; }
-  .side-title em { color: var(--accent2); font-style: normal; }
-  .online-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--green); font-weight: 500; }
-  .online-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-  .side-provider { font-size: 11px; color: var(--text3); }
-
-  .qbtns { padding: 10px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 5px; flex-shrink: 0; }
-  .qbtn {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
-    padding: 7px 9px; font-size: 11px; color: var(--text2); cursor: pointer;
-    text-align: left; font-family: 'DM Sans', sans-serif; line-height: 1.3; transition: all 0.13s;
-    font-weight: 500;
-  }
-  .qbtn:hover { background: var(--surface3); color: var(--text); border-color: var(--border2); }
-  .qbtn-icon { font-size: 12px; display: block; margin-bottom: 2px; }
-
-  .chat-msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-  .msg { display: flex; flex-direction: column; gap: 3px; }
-  .msg-role { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); font-weight: 600; }
-  .msg-bubble { font-size: 12px; line-height: 1.6; padding: 9px 11px; border-radius: 9px; }
-  .msg-user .msg-bubble { background: var(--accent-bg); color: var(--text); border: 1px solid rgba(79,70,229,0.15); }
-  .msg-ilmu .msg-bubble { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .msg-ilmu .msg-bubble strong { color: var(--accent); }
-  .typing { display: flex; gap: 4px; padding: 4px 0; align-items: center; }
-  .typing span { width: 5px; height: 5px; background: var(--text3); border-radius: 50%; animation: blink 1.2s ease-in-out infinite; }
-  .typing span:nth-child(2) { animation-delay: 0.2s; }
-  .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes blink { 0%,80%,100%{opacity:0.25;transform:scale(0.8)}40%{opacity:1;transform:scale(1)} }
-
-  .chat-foot { padding: 10px 12px; border-top: 1px solid var(--border); display: flex; gap: 7px; flex-shrink: 0; }
-  .chat-in {
-    flex: 1; background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 8px 11px; font-size: 12px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; outline: none; resize: none; height: 36px;
-    transition: border-color 0.2s;
-  }
-  .chat-in:focus { border-color: var(--accent); background: #fff; }
-  .chat-in::placeholder { color: var(--text3); }
-  .send-btn {
-    background: var(--accent); border: none; border-radius: 8px; width: 36px; height: 36px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s;
-  }
-  .send-btn:hover { background: #4338ca; }
-  .send-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
-
-  /* DETAIL DRAWER */
-  .drawer {
-    display: none; position: fixed; top: 54px; right: 320px;
-    width: 340px; height: calc(100vh - 54px);
-    background: var(--surface); border-left: 1px solid var(--border2);
-    overflow-y: auto; z-index: 50; padding: 18px;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.06);
-  }
-  .drawer-close {
-    float: right; background: none; border: 1px solid var(--border2); border-radius: 6px;
-    color: var(--text2); cursor: pointer; padding: 3px 8px; font-size: 11px;
-    font-family: 'DM Sans', sans-serif; transition: all 0.13s;
-  }
-  .drawer-close:hover { background: var(--surface3); color: var(--text); }
-  .drawer-title { font-size: 15px; font-weight: 600; margin: 10px 0 14px; line-height: 1.3; clear: both; }
-  .drow { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
-  .dkey { font-size: 11px; color: var(--text3); width: 88px; flex-shrink: 0; padding-top: 1px; font-weight: 500; }
-  .dval { font-size: 12px; color: var(--text); flex: 1; line-height: 1.5; }
-  .dsec { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
-  .dsec-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); font-weight: 600; margin-bottom: 7px; }
-  .blocker-box { background: var(--red-bg); border: 1px solid rgba(220,38,38,0.2); border-radius: 8px; padding: 9px 11px; font-size: 12px; color: var(--red); line-height: 1.5; }
-  .nextact-box { background: var(--blue-bg); border: 1px solid rgba(37,99,235,0.15); border-radius: 8px; padding: 9px 11px; font-size: 12px; color: var(--text); line-height: 1.5; }
-  .brief-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
-  .drawer-link { font-size: 12px; color: var(--accent2); text-decoration: none; font-weight: 500; }
-  .drawer-link:hover { text-decoration: underline; }
-
-  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } .side { display: none; } .stat-strip { grid-template-columns: repeat(3,1fr); } }
+  @media(max-width:900px){.main{grid-template-columns:1fr;}.side{display:none;}.stats{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
 
 <!-- SETUP -->
-<div id="setup-screen">
+<div id="setup">
   <div class="setup-card">
     <div class="setup-logo">IL<span>MU</span></div>
-    <div class="setup-sub">YTLCC Visibility Dashboard — connect your data sources below</div>
-
-    <div class="setup-section">
-      <div class="setup-section-title">Notion</div>
-      <div class="setup-label">Integration Token</div>
-      <input class="setup-input" id="notion-key" type="password" placeholder="secret_xxxxxxxxxxxx">
+    <div class="setup-sub">YTLCC Visibility Dashboard — enter your ILMU API key to activate the AI assistant</div>
+    <div class="ilmu-note">
+      🇲🇾 This dashboard uses your live Notion data (already loaded) + ILMU AI hosted on YTL AI Cloud. Your data never leaves Malaysia.
     </div>
-
-    <div class="setup-section">
-      <div class="setup-section-title">AI Assistant</div>
-      <div class="setup-label">AI Provider</div>
-      <select class="setup-select" id="ai-provider" onchange="updateProviderHint()">
-        <optgroup label="── ILMU (Malaysian AI · YTL AI Cloud) ──">
-          <option value="ilmu-claw" selected>ILMU Claw</option>
-          <option value="ilmu-nemo-super">ILMU NEMO SUPER</option>
-          <option value="ilmu-nemo-nano">ILMU NEMO NANO</option>
-        </optgroup>
-        <optgroup label="── Other Providers ──">
-          <option value="claude">Claude (Anthropic)</option>
-          <option value="openai">ChatGPT (OpenAI)</option>
-          <option value="gemini">Gemini (Google)</option>
-          <option value="groq">Groq (Llama / Mixtral)</option>
-          <option value="mistral">Mistral AI</option>
-          <option value="openrouter">OpenRouter (any model)</option>
-        </optgroup>
-      </select>
-      <div class="setup-label">API Key</div>
-      <input class="setup-input" id="ai-key" type="password" placeholder="Paste your API key here">
-      <div class="provider-note" id="provider-hint">Get your key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></div>
-      <div class="setup-label" id="model-label" style="display:none">Model (optional — leave blank for default)</div>
-      <input class="setup-input" id="ai-model" placeholder="e.g. gpt-4o or leave blank" style="display:none">
-    </div>
-
-    <button class="setup-btn" onclick="startApp()">Connect & Load Dashboard</button>
-    <div class="setup-footer">Keys are stored only in this browser session. Never sent anywhere except directly to the API you choose.</div>
+    <div class="setup-lbl">AI Provider</div>
+    <select class="setup-select" id="ai-provider" onchange="updateHint()">
+      <optgroup label="── ILMU (Malaysian AI · YTL AI Cloud) ──">
+        <option value="ilmu-claw" selected>ILMU Claw (recommended)</option>
+        <option value="ilmu-nemo-super">ILMU NEMO SUPER</option>
+        <option value="ilmu-nemo-nano">ILMU NEMO NANO (faster)</option>
+      </optgroup>
+      <optgroup label="── Other Providers ──">
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="openai">ChatGPT (OpenAI)</option>
+        <option value="gemini">Gemini (Google)</option>
+        <option value="groq">Groq (fast, free)</option>
+        <option value="mistral">Mistral AI</option>
+        <option value="openrouter">OpenRouter</option>
+      </optgroup>
+    </select>
+    <div class="setup-lbl">API Key</div>
+    <input class="setup-input" id="ai-key" type="password" placeholder="sk-...">
+    <div class="provider-note" id="phint">Get your key from <a href="https://console.ilmu.ai/dashboard" target="_blank">console.ilmu.ai</a> · All three ILMU options use the same key.</div>
+    <button class="setup-btn" onclick="startApp()">Open Dashboard</button>
+    <div class="setup-footer">The task data is already loaded from Notion. The API key is only used for the ILMU chat assistant.</div>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app">
   <div class="header">
-    <div class="header-left">
-      <div class="logo">IL<span>MU</span></div>
-      <div class="logo-divider"></div>
-      <div class="logo-sub">YTLCC Task Board</div>
-      <div class="sync-badge"><div class="sync-dot"></div><span id="sync-label">Loading…</span></div>
+    <div style="display:flex;align-items:center">
+      <div class="hlogo">IL<span>MU</span></div>
+      <div class="hlogo-sep"></div>
+      <div class="hlogo-sub">YTLCC Task Board</div>
+      <div class="sync-info"><div class="sync-dot"></div><span id="sync-lbl">Live data · 28 Apr 2026</span></div>
     </div>
     <div class="header-right">
       <button class="hbtn" onclick="filterByStatus('Blocked')">🚫 Blocked</button>
       <button class="hbtn" onclick="filterByStatus('')">All Tasks</button>
-      <button class="hbtn hbtn-primary" onclick="loadData()">↺ Refresh</button>
+      <button class="hbtn hbtn-accent" onclick="showRefreshInfo()">↺ Refresh data</button>
     </div>
   </div>
 
   <div class="main">
     <div class="content">
-      <div class="stat-strip">
-        <div class="stat c-default" onclick="filterByStatus('')"><div class="stat-num" id="s-total">—</div><div class="stat-lbl">Active Tasks</div></div>
-        <div class="stat c-red" onclick="filterByStatus('Blocked')"><div class="stat-num" id="s-blocked">—</div><div class="stat-lbl">Blocked</div></div>
-        <div class="stat c-blue" onclick="filterByStatus('In Progress')"><div class="stat-num" id="s-progress">—</div><div class="stat-lbl">In Progress</div></div>
-        <div class="stat c-green" onclick="filterByStatus('Done')"><div class="stat-num" id="s-done">—</div><div class="stat-lbl">Done</div></div>
-        <div class="stat c-amber" onclick="filterByPriority('🔴 High')"><div class="stat-num" id="s-high">—</div><div class="stat-lbl">High Priority</div></div>
+      <div class="stats">
+        <div class="stat cn" onclick="filterByStatus('')"><div class="stat-n" id="s-total">0</div><div class="stat-l">Active Tasks</div></div>
+        <div class="stat cr" onclick="filterByStatus('Blocked')"><div class="stat-n" id="s-blocked">0</div><div class="stat-l">Blocked</div></div>
+        <div class="stat cb" onclick="filterByStatus('In Progress')"><div class="stat-n" id="s-progress">0</div><div class="stat-l">In Progress</div></div>
+        <div class="stat cg" onclick="filterByStatus('Done')"><div class="stat-n" id="s-done">0</div><div class="stat-l">Done</div></div>
+        <div class="stat ca" onclick="filterByPriority('🔴 High')"><div class="stat-n" id="s-high">0</div><div class="stat-l">High Priority</div></div>
       </div>
-
-      <div class="filter-bar">
+      <div class="filters">
         <span class="flbl">Team</span>
         <button class="fchip active" onclick="setTeam(this,'')">All</button>
         <button class="fchip" onclick="setTeam(this,'Brand')">Brand</button>
@@ -363,20 +239,17 @@
         <button class="fchip" onclick="setTeam(this,'Comms')">Comms</button>
         <button class="fchip" onclick="setTeam(this,'Digital')">Digital</button>
         <button class="fchip" onclick="setTeam(this,'Production')">Production</button>
-        <input class="fsearch" id="fsearch" placeholder="Search tasks…" oninput="render()">
+        <input class="fsrch" id="fsrch" placeholder="Search tasks…" oninput="render()">
       </div>
-
       <div class="tbl-wrap">
-        <div class="tbl-head">
+        <div class="tbl-top">
           <span class="tbl-title">Task Board</span>
-          <span class="tbl-count" id="row-count">—</span>
+          <span class="tbl-cnt" id="row-cnt">—</span>
         </div>
         <div style="overflow-x:auto">
           <table>
-            <thead><tr>
-              <th>Task</th><th>Project</th><th>Team</th><th>Status</th><th>Priority</th><th>Due Date</th><th>Owner</th>
-            </tr></thead>
-            <tbody id="tbody"><tr><td colspan="7" class="loading-cell"><span class="spinner"></span>Connecting to Notion…</td></tr></tbody>
+            <thead><tr><th>Task</th><th>Project</th><th>Team</th><th>Status</th><th>Priority</th><th>Due Date</th></tr></thead>
+            <tbody id="tbody"></tbody>
           </table>
         </div>
       </div>
@@ -387,182 +260,133 @@
       <div class="side-top">
         <div class="side-title-row">
           <div class="side-title">Ask <em>ILMU</em></div>
-          <div class="online-badge"><div class="online-dot"></div>Live</div>
+          <div class="live-badge"><div class="live-dot"></div>Live</div>
         </div>
-        <div class="side-provider" id="side-provider">—</div>
+        <div class="side-prov" id="side-prov">Select a provider to activate</div>
       </div>
       <div class="qbtns">
-        <button class="qbtn" onclick="qa('What tasks are currently blocked and why?')"><span class="qbtn-icon">🚫</span>What's blocked?</button>
-        <button class="qbtn" onclick="qa('Which tasks are due this week or overdue?')"><span class="qbtn-icon">📅</span>Due this week</button>
-        <button class="qbtn" onclick="qa('Give me a summary of all active projects and their status')"><span class="qbtn-icon">📊</span>Project summary</button>
-        <button class="qbtn" onclick="qa('Which high priority tasks need immediate attention?')"><span class="qbtn-icon">🔴</span>High priority</button>
-        <button class="qbtn" onclick="qa('What tasks were recently completed?')"><span class="qbtn-icon">✅</span>Recent wins</button>
-        <button class="qbtn" onclick="qa('Which team currently has the most active tasks?')"><span class="qbtn-icon">👥</span>Team load</button>
+        <button class="qbtn" onclick="qa('What tasks are currently blocked and what are the blockers?')"><span class="qbtn-i">🚫</span>What's blocked?</button>
+        <button class="qbtn" onclick="qa('Which tasks are due this week or already overdue?')"><span class="qbtn-i">📅</span>Due this week</button>
+        <button class="qbtn" onclick="qa('Give me a summary of all active projects and their current status')"><span class="qbtn-i">📊</span>Project summary</button>
+        <button class="qbtn" onclick="qa('Which high priority tasks need immediate attention?')"><span class="qbtn-i">🔴</span>High priority</button>
+        <button class="qbtn" onclick="qa('What tasks are in review right now?')"><span class="qbtn-i">👀</span>In review</button>
+        <button class="qbtn" onclick="qa('Which team currently has the most active tasks?')"><span class="qbtn-i">👥</span>Team load</button>
       </div>
       <div class="chat-msgs" id="chat-msgs">
         <div class="msg msg-ilmu">
           <div class="msg-role">ILMU</div>
-          <div class="msg-bubble">Connected to your live Notion Task Board. Ask me about blockers, deadlines, project status or team workload — I'll answer from your real data.</div>
+          <div class="msg-b">Connected to your live YTLCC Task Board — 20 tasks loaded across all projects. Ask me anything about blockers, deadlines, project status, or team workload.</div>
         </div>
       </div>
       <div class="chat-foot">
-        <textarea class="chat-in" id="chat-in" placeholder="Ask anything about tasks…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send();}"></textarea>
+        <textarea class="chat-in" id="chat-in" placeholder="Ask anything about your tasks…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send();}"></textarea>
         <button class="send-btn" onclick="send()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
       </div>
     </div>
   </div>
-
   <div class="drawer" id="drawer"><div id="drawer-content"></div></div>
 </div>
 
 <script>
-// ── PROVIDER CONFIG ──
+// ── LIVE NOTION DATA (fetched 28 Apr 2026) ──
+const TASKS = [
+  {id:"344cce4450b38164b577d18cecfd1ace",task:"Audio Museum Tour — Script Writing",project:"Audio Museum Tour",team:["Production"],status:"Blocked",priority:"🔴 High",due:"2026-04-20",next:"Brief copywriter once scope is confirmed",blocker:"Waiting to see if Hwei managed to re-write the script",remarks:"Staging environment is ready — only waiting on files",brief:"Write audio scripts for each exhibit floor of the museum tour.",url:"https://www.notion.so/344cce4450b38164b577d18cecfd1ace"},
+  {id:"34bcce4450b3811282d5f375a84e39ca",task:"Update BTRT website homepage banner with new campaign visuals",project:"BTRT Website Improvement",team:["Digital"],status:"Blocked",priority:"🔴 High",due:"2026-04-25",next:"Once assets received, upload to CMS and QA on staging before going live",blocker:"Staging environment is ready — only waiting on files",brief:"Replace existing homepage banner with new campaign assets.",url:"https://www.notion.so/34bcce4450b3811282d5f375a84e39ca"},
+  {id:"34bcce4450b381519e99da60a773a06a",task:"Plan and schedule May social media content calendar",project:"Social Media",team:["Digital"],status:"In Progress",priority:"🟡 Medium",due:"2026-04-28",next:"Get calendar approved by Brand before scheduling posts",blocker:"",remarks:"Template shared. Content gaps for Week 3 and 4.",brief:"Build the May content calendar for YTLCC social channels.",url:"https://www.notion.so/34bcce4450b381519e99da60a773a06a"},
+  {id:"34bcce4450b3819f8cfecce2e425455a",task:"Finalise narration script for all 12 museum tour stops",project:"Audio Museum Tour",team:["Comms"],status:"Review",priority:"🔴 High",due:"2026-04-28",next:"Send to voice-over artist for recording session booking",blocker:"",remarks:"Stops 1–8 approved. Stops 9–12 pending stakeholder sign-off.",brief:"Finalise narration scripts for the Audio Guided Museum Tour.",url:"https://www.notion.so/34bcce4450b3819f8cfecce2e425455a"},
+  {id:"34bcce4450b381faa48ceb27ecf28965",task:"Finalise LEAD 2026 speaker confirmation email",project:"LEAD 2026",team:["Comms"],status:"In Progress",priority:"🔴 High",due:"2026-04-28",next:"Send draft to Bradley for review before dispatch",blocker:"",remarks:"Speaker list finalised — waiting on AV specs from Production",brief:"Draft and send confirmation email to all confirmed speakers for LEAD 2026.",url:"https://www.notion.so/34bcce4450b381faa48ceb27ecf28965"},
+  {id:"34bcce4450b3814eb0dedb0dd4f32bba",task:"Prepare full event rundown for LEAD 2026",project:"LEAD 2026",team:["Brand"],status:"In Progress",priority:"🔴 High",due:"2026-04-29",next:"Share with Ian for final review before printing",blocker:"",remarks:"Waiting on final speaker order confirmation from Comms",brief:"Create a comprehensive minute-by-minute rundown document for LEAD 2026.",url:"https://www.notion.so/34bcce4450b3814eb0dedb0dd4f32bba"},
+  {id:"34bcce4450b3811497b1cf4515747d9c",task:"Audit all BTRT website pages for outdated content",project:"BTRT Website Improvement",team:["Digital"],status:"In Progress",priority:"🟡 Medium",due:"2026-04-30",next:"Compile audit report and flag pages for rewrite or removal",blocker:"",remarks:"60% complete — blog section still pending",brief:"Conduct a full content audit of the BTRT website.",url:"https://www.notion.so/34bcce4450b3811497b1cf4515747d9c"},
+  {id:"34bcce4450b3817da101ca211476fb42",task:"Review and approve Founders Day 2026 KV designs",project:"Founders Day 2026",team:["Design"],status:"Review",priority:"🟡 Medium",due:"2026-04-30",next:"Collect feedback and compile into one revision brief",blocker:"",remarks:"3 KV options submitted — Option B preferred internally",brief:"Design team completed first round of KV options for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b3817da101ca211476fb42"},
+  {id:"34bcce4450b38126928dd677f49422d6",task:"Audio Museum Tour App UI Review",project:"Audio Museum Tour",team:["Digital"],status:"Blocked",priority:"🔴 High",due:"2026-05-01",next:"Log all bugs in shared sheet and prioritise with dev team",blocker:"App build not yet received from external dev vendor. Mun Teng is following up.",remarks:"Target soft launch: mid-May",brief:"Test the Audio Museum Tour companion app on multiple devices.",url:"https://www.notion.so/34bcce4450b38126928dd677f49422d6"},
+  {id:"34bcce4450b3819d9b1bcb061980fd44",task:"Design stage backdrop and signage for LEAD 2026",project:"LEAD 2026",team:["Design"],status:"Review",priority:"🟡 Medium",due:"2026-05-02",next:"Submit print-ready files to Production once approved",blocker:"",remarks:"First draft done — awaiting Brand sign-off",brief:"Design the main stage backdrop, directional signage, and registration counter fascia for LEAD 2026.",url:"https://www.notion.so/34bcce4450b3819d9b1bcb061980fd44"},
+  {id:"34bcce4450b381c89db8c7c2aab3874c",task:"Prepare photography brief for May internal event",project:"Production Ad-Hoc Request",team:["Production"],status:"Draft",priority:"🟡 Medium",due:"2026-05-03",next:"Send brief to photographer and confirm shoot schedule",blocker:"",remarks:"Event details confirmed. Brief template being drafted.",brief:"Create a photography brief for the May internal event.",url:"https://www.notion.so/34bcce4450b381c89db8c7c2aab3874c"},
+  {id:"34bcce4450b38164b116f26cdb0d27c9",task:"Write social captions and EDM copy for Lunchtime Conversations Episode 4",project:"Lunchtime Conversations",team:["Comms"],status:"Draft",priority:"🟡 Medium",due:"2026-05-04",next:"Pass copy to Design team for asset production",blocker:"",remarks:"First draft in progress. Episode topic: Sustainable Leadership.",brief:"Write captions and copy for Episode 4 promotion.",url:"https://www.notion.so/34bcce4450b38164b116f26cdb0d27c9"},
+  {id:"34bcce4450b38113ba21e881c6926e06",task:"Design and send Founders Day 2026 Save the Date email",project:"Founders Day 2026",team:["Comms"],status:"Draft",priority:"🟡 Medium",due:"2026-05-05",next:"Get HTML template coded and tested across email clients",blocker:"",remarks:"Copy draft approved. Design pending.",brief:"Create a Save the Date EDM for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b38113ba21e881c6926e06"},
+  {id:"34bcce4450b38174ad88c2d83b3118eb",task:"Compile April social media performance report",project:"Social Media",team:["Digital"],status:"Draft",priority:"🟢 Low",due:"2026-05-05",next:"Present findings to Bradley in next Monday sync",blocker:"",remarks:"Raw data pulled. Report template being filled.",brief:"Pull April analytics from Instagram, Facebook, and LinkedIn.",url:"https://www.notion.so/34bcce4450b38174ad88c2d83b3118eb"},
+  {id:"34bcce4450b381b89625d52d517fea8a",task:"Create social media assets for Lunchtime Conversations Episode 4",project:"Lunchtime Conversations",team:["Design"],status:"In Progress",priority:"🔴 High",due:"2026-05-06",next:"Upload finalised assets to shared Drive and notify Digital team",blocker:"",remarks:"Speaker details confirmed. Recording date: May 8.",brief:"Design Instagram and LinkedIn graphics to promote Episode 4.",url:"https://www.notion.so/34bcce4450b381b89625d52d517fea8a"},
+  {id:"34bcce4450b3811cb206cd85319ed622",task:"Print and deliver 6x rollup banners for upcoming event",project:"Production Ad-Hoc Request",team:["Production"],status:"In Progress",priority:"🔴 High",due:"2026-05-08",next:"Confirm delivery address and event date with requestor",blocker:"",remarks:"Artwork approved. Print order placed with vendor.",brief:"Print 6 units of 85x200cm rollup banners based on approved artwork.",url:"https://www.notion.so/34bcce4450b3811cb206cd85319ed622"},
+  {id:"34bcce4450b3814a94b2c142cd68d9e0",task:"Layout and design the Founders Day 2026 programme booklet",project:"Founders Day 2026",team:["Design"],status:"Ideation",priority:"🟢 Low",due:"2026-05-10",next:"Send to printer once final copy is received from Comms",blocker:"",remarks:"Content not finalised — on hold until speaker lineup confirmed",brief:"Design a printed programme booklet for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b3814a94b2c142cd68d9e0"},
+  {id:"344cce4450b381e1b8b1e925050eafd2",task:"BTRT Website — Build Landing Page Wireframe",project:"BTRT Website Improvement",team:["Brand"],status:"Ideation",priority:"🟡 Medium",due:"",next:"Share wireframe with stakeholder for feedback",blocker:"",remarks:"",brief:"Build wireframe for the new BTRT website landing page based on approved site map.",url:"https://www.notion.so/344cce4450b381e1b8b1e925050eafd2"},
+];
+
+// ── STATE ──
 const PROVIDERS = {
-  'ilmu-claw':       { name:'ILMU Claw',          url:'https://api.ilmu.ai/v1/chat/completions', model:'nemo-super',               hint:'console.ilmu.ai', hintUrl:'https://console.ilmu.ai/dashboard' },
-  'ilmu-nemo-super': { name:'ILMU NEMO SUPER',    url:'https://api.ilmu.ai/v1/chat/completions', model:'nemo-super',               hint:'console.ilmu.ai', hintUrl:'https://console.ilmu.ai/dashboard' },
-  'ilmu-nemo-nano':  { name:'ILMU NEMO NANO',     url:'https://api.ilmu.ai/v1/chat/completions', model:'ilmu-nemo-nano',           hint:'console.ilmu.ai', hintUrl:'https://console.ilmu.ai/dashboard' },
-  claude:            { name:'Claude (Anthropic)',  url:'https://api.anthropic.com/v1/messages',   model:'claude-sonnet-4-20250514', hint:'console.anthropic.com', hintUrl:'https://console.anthropic.com' },
-  openai:            { name:'ChatGPT (OpenAI)',    url:'https://api.openai.com/v1/chat/completions', model:'gpt-4o-mini',           hint:'platform.openai.com',   hintUrl:'https://platform.openai.com/api-keys' },
-  gemini:            { name:'Gemini (Google)',     url:'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}', model:'gemini-1.5-flash', hint:'aistudio.google.com', hintUrl:'https://aistudio.google.com/app/apikey' },
-  groq:              { name:'Groq',               url:'https://api.groq.com/openai/v1/chat/completions', model:'llama3-8b-8192',   hint:'console.groq.com',     hintUrl:'https://console.groq.com/keys' },
-  mistral:           { name:'Mistral AI',         url:'https://api.mistral.ai/v1/chat/completions', model:'mistral-small-latest', hint:'console.mistral.ai',   hintUrl:'https://console.mistral.ai/api-keys/' },
-  openrouter:        { name:'OpenRouter',         url:'https://openrouter.ai/api/v1/chat/completions', model:'meta-llama/llama-3-8b-instruct:free', hint:'openrouter.ai', hintUrl:'https://openrouter.ai/keys' }
+  'ilmu-claw':       {name:'ILMU Claw',        url:'https://api.ilmu.ai/v1/chat/completions',  model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  'ilmu-nemo-super': {name:'ILMU NEMO SUPER',  url:'https://api.ilmu.ai/v1/chat/completions',  model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  'ilmu-nemo-nano':  {name:'ILMU NEMO NANO',   url:'https://api.ilmu.ai/v1/chat/completions',  model:'ilmu-nemo-nano',           hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  claude:            {name:'Claude',            url:'https://api.anthropic.com/v1/messages',    model:'claude-sonnet-4-20250514', hint:'console.anthropic.com', hintUrl:'https://console.anthropic.com'},
+  openai:            {name:'ChatGPT',           url:'https://api.openai.com/v1/chat/completions',model:'gpt-4o-mini',            hint:'platform.openai.com',   hintUrl:'https://platform.openai.com/api-keys'},
+  gemini:            {name:'Gemini',            url:'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}',model:'gemini-1.5-flash',hint:'aistudio.google.com',hintUrl:'https://aistudio.google.com/app/apikey'},
+  groq:              {name:'Groq',              url:'https://api.groq.com/openai/v1/chat/completions',model:'llama3-8b-8192',    hint:'console.groq.com',      hintUrl:'https://console.groq.com/keys'},
+  mistral:           {name:'Mistral',           url:'https://api.mistral.ai/v1/chat/completions',model:'mistral-small-latest',  hint:'console.mistral.ai',    hintUrl:'https://console.mistral.ai/api-keys/'},
+  openrouter:        {name:'OpenRouter',        url:'https://openrouter.ai/api/v1/chat/completions',model:'meta-llama/llama-3-8b-instruct:free',hint:'openrouter.ai',hintUrl:'https://openrouter.ai/keys'}
 };
 
-let NOTION_KEY='', AI_KEY='', AI_PROVIDER='ilmu-claw', AI_MODEL='';
-let allTasks=[], filtered=[], activeStatus='', activePriority='', activeTeam='', chatHistory=[];
-const DB_ID='340453e3-d5d8-4e78-b092-04976f5c66fd';
+let AI_KEY='', AI_PROVIDER='ilmu-claw', AI_MODEL='nemo-super';
+let activeStatus='', activePriority='', activeTeam='';
+let filtered=[];
 
-function updateProviderHint(){
+function updateHint(){
   const id=document.getElementById('ai-provider').value;
   const p=PROVIDERS[id];
-  let hint=`Get your key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>`;
-  if(id.startsWith('ilmu')){
-    hint=`Get your <code style="font-family:'DM Mono',monospace;font-size:11px;background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">sk-...</code> key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>. All three ILMU options use the same key — only the model changes. 🇲🇾 Data stays in Malaysia.`;
-  }
-  document.getElementById('provider-hint').innerHTML=hint;
-  document.getElementById('ai-model').style.display='block';
-  document.getElementById('model-label').style.display='block';
-  document.getElementById('ai-model').placeholder=`Default: ${p.model}`;
+  let h=`Get your key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>`;
+  if(id.startsWith('ilmu')) h=`Get your <code style="font-family:'DM Mono',monospace;font-size:11px;background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">sk-...</code> key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>. All 3 ILMU options share the same key — only the model changes.`;
+  document.getElementById('phint').innerHTML=h;
 }
-updateProviderHint();
 
 function startApp(){
-  NOTION_KEY=document.getElementById('notion-key').value.trim();
   AI_KEY=document.getElementById('ai-key').value.trim();
+  if(!AI_KEY){alert('Please enter your API key.');return;}
   AI_PROVIDER=document.getElementById('ai-provider').value;
-  AI_MODEL=document.getElementById('ai-model').value.trim()||PROVIDERS[AI_PROVIDER].model;
-  if(!NOTION_KEY||!AI_KEY){alert('Please enter both keys.');return;}
-  document.getElementById('setup-screen').style.display='none';
+  AI_MODEL=PROVIDERS[AI_PROVIDER].model;
+  document.getElementById('setup').style.display='none';
   document.getElementById('app').style.display='block';
-  const prov2=PROVIDERS[AI_PROVIDER];
-  const localTag=AI_PROVIDER.startsWith('ilmu')?'  ·  🇲🇾 Malaysian AI':'';
-  document.getElementById('side-provider').textContent='Powered by '+prov2.name+' · '+AI_MODEL+localTag;
-  loadData();
-}
-
-// ── NOTION DATA ──
-async function loadData(){
-  document.getElementById('tbody').innerHTML='<tr><td colspan="7" class="loading-cell"><span class="spinner"></span>Fetching live data from Notion…</td></tr>';
-  document.getElementById('sync-label').textContent='Syncing…';
-  try{
-    const tasks=await fetchTasks();
-    allTasks=tasks;
-    updateStats();
-    render();
-    document.getElementById('sync-label').textContent='Synced '+new Date().toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
-  }catch(e){
-    document.getElementById('tbody').innerHTML=`<tr><td colspan="7" class="loading-cell" style="color:var(--red)">Error: ${e.message}. Check your Notion token and that the integration has access to the Task Board database.</td></tr>`;
-    document.getElementById('sync-label').textContent='Error';
-  }
-}
-
-async function fetchTasks(){
-  let tasks=[],cursor=undefined,page=0;
-  do{
-    const body={page_size:100,sorts:[{property:'Due Date',direction:'ascending'}]};
-    if(cursor)body.start_cursor=cursor;
-    const r=await fetch('https://api.notion.com/v1/databases/'+DB_ID+'/query',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+NOTION_KEY,'Notion-Version':'2022-06-28','Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    });
-    if(!r.ok){const e=await r.json();throw new Error(e.message||'Notion '+r.status);}
-    const d=await r.json();
-    tasks=tasks.concat(d.results.map(parseTask));
-    cursor=d.has_more?d.next_cursor:undefined;
-    page++;
-  }while(cursor&&page<10);
-  return tasks;
-}
-
-function parseTask(pg){
-  const p=pg.properties;
-  const txt=(prop)=>{try{return(p[prop]?.rich_text||[]).map(t=>t.plain_text).join('')||'';}catch{return'';}};
-  const ttl=(prop)=>{try{return(p[prop]?.title||[]).map(t=>t.plain_text).join('')||'';}catch{return'';}};
-  const sel=(prop)=>{try{return p[prop]?.select?.name||'';}catch{return'';}};
-  const msel=(prop)=>{try{return(p[prop]?.multi_select||[]).map(o=>o.name);}catch{return[];}};
-  const dt=(prop)=>{try{return p[prop]?.date?.start||'';}catch{return'';}};
-  const ppl=(prop)=>{try{return(p[prop]?.people||[]).map(u=>u.name||'?');}catch{return[];}};
-  return{
-    id:pg.id, url:pg.url,
-    task:txt('Task')||ttl('Blocker')||txt('Request Title')||'(untitled)',
-    blocker:ttl('Blocker'), brief:txt('Brief'), project:sel('Project'),
-    team:msel('Team'), status:sel('Status'), priority:sel('Priority'),
-    due:dt('Due Date'), pic:txt('PIC'), person:ppl('Person'),
-    next:txt('Next Action1'), remarks:txt('Remarks'),
-    updated:pg.last_edited_time
-  };
+  const flag=AI_PROVIDER.startsWith('ilmu')?'  🇲🇾':'';
+  document.getElementById('side-prov').textContent=PROVIDERS[AI_PROVIDER].name+' · '+AI_MODEL+flag;
+  updateStats();render();
 }
 
 // ── STATS ──
 function updateStats(){
-  const active=allTasks.filter(t=>t.status!=='Done');
+  const active=TASKS.filter(t=>t.status!=='Done');
   document.getElementById('s-total').textContent=active.length;
-  document.getElementById('s-blocked').textContent=allTasks.filter(t=>t.status==='Blocked').length;
-  document.getElementById('s-progress').textContent=allTasks.filter(t=>t.status==='In Progress').length;
-  document.getElementById('s-done').textContent=allTasks.filter(t=>t.status==='Done').length;
+  document.getElementById('s-blocked').textContent=TASKS.filter(t=>t.status==='Blocked').length;
+  document.getElementById('s-progress').textContent=TASKS.filter(t=>t.status==='In Progress').length;
+  document.getElementById('s-done').textContent=TASKS.filter(t=>t.status==='Done').length;
   document.getElementById('s-high').textContent=active.filter(t=>t.priority==='🔴 High').length;
 }
 
 // ── FILTERS ──
 function filterByStatus(s){activeStatus=activeStatus===s?'':s;activePriority='';render();}
 function filterByPriority(p){activePriority=activePriority===p?'':p;activeStatus='';render();}
-function setTeam(btn,t){
-  activeTeam=t;
-  document.querySelectorAll('.fchip').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
+function setTeam(btn,t){activeTeam=t;document.querySelectorAll('.fchip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
 
 // ── RENDER ──
 function render(){
-  const q=(document.getElementById('fsearch').value||'').toLowerCase();
-  filtered=allTasks.filter(t=>{
+  const q=(document.getElementById('fsrch').value||'').toLowerCase();
+  filtered=TASKS.filter(t=>{
     if(activeStatus&&t.status!==activeStatus)return false;
     if(activePriority&&t.priority!==activePriority)return false;
     if(activeTeam&&!t.team.includes(activeTeam))return false;
-    if(q){const h=[t.task,t.project,t.pic,...t.team,t.status,t.blocker].join(' ').toLowerCase();if(!h.includes(q))return false;}
+    if(q){const h=[t.task,t.project,...t.team,t.status,t.blocker].join(' ').toLowerCase();if(!h.includes(q))return false;}
     return true;
   });
-  document.getElementById('row-count').textContent=filtered.length+' task'+(filtered.length!==1?'s':'');
-  if(!filtered.length){document.getElementById('tbody').innerHTML='<tr><td colspan="7" class="empty-cell">No tasks match the current filters</td></tr>';return;}
-  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Ideation:'p-ideation',Draft:'p-draft',Approved:'p-approved','On Hold':'p-onhold'};
-  const pc={'🔴 High':'pri-h','🟡 Medium':'pri-m','🟢 Low':'pri-l'};
-  const ps={'🔴 High':'🔴 High','🟡 Medium':'🟡 Med','🟢 Low':'🟢 Low'};
+  document.getElementById('row-cnt').textContent=filtered.length+' task'+(filtered.length!==1?'s':'');
+  if(!filtered.length){document.getElementById('tbody').innerHTML='<tr><td colspan="6" class="empty-r">No tasks match the current filters</td></tr>';return;}
+  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Approved:'p-approved'};
+  const pc={'🔴 High':'ph','🟡 Medium':'pm','🟢 Low':'pl'};
   document.getElementById('tbody').innerHTML=filtered.map((t,i)=>{
     const tags=t.team.map(tm=>`<span class="ttag t-${tm}">${tm}</span>`).join('');
-    const owner=t.pic||(t.person[0]||'—');
-    const due=fmtDate(t.due);const dc=dueClass(t.due);
-    const sub=t.blocker&&t.blocker!==t.task?`<div class="td-sub">${esc(t.blocker.substring(0,40)+(t.blocker.length>40?'…':''))}</div>`:'';
+    const dc=dueClass(t.due);
+    const sub=t.blocker?`<div class="td-s">⚠ ${esc(t.blocker.substring(0,38)+(t.blocker.length>38?'…':''))}</div>`:'';
     return `<tr onclick="openDrawer(${i})" data-i="${i}">
-      <td><div class="td-main">${esc(t.task.substring(0,44)+(t.task.length>44?'…':''))}</div>${sub}</td>
-      <td><div class="proj-label">${esc(t.project||'—')}</div></td>
+      <td><div class="td-m">${esc(t.task.substring(0,46)+(t.task.length>46?'…':''))}</div>${sub}</td>
+      <td><div class="proj-lbl">${esc(t.project||'—')}</div></td>
       <td>${tags||'<span style="color:var(--text3)">—</span>'}</td>
-      <td><span class="pill ${sc[t.status]||'p-ideation'}">${esc(t.status||'—')}</span></td>
-      <td><span class="pri ${pc[t.priority]||''}">${ps[t.priority]||'—'}</span></td>
-      <td><span class="dt ${dc}">${due}</span></td>
-      <td class="owner-cell">${esc(owner)}</td>
+      <td><span class="pill ${sc[t.status]||'p-other'}">${esc(t.status||'—')}</span></td>
+      <td><span class="pri ${pc[t.priority]||''}">${t.priority||'—'}</span></td>
+      <td><span class="dt ${dc}">${fmtDate(t.due)}</span></td>
     </tr>`;
   }).join('');
 }
@@ -576,120 +400,92 @@ function openDrawer(i){
   const t=filtered[i];if(!t)return;
   document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('sel'));
   document.querySelector(`[data-i="${i}"]`)?.classList.add('sel');
-  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Ideation:'p-ideation',Draft:'p-draft',Approved:'p-approved','On Hold':'p-onhold'};
-  const owner=t.pic||(t.person.join(', ')||'—');
-  const teams=t.team.length?t.team.map(tm=>`<span class="ttag t-${tm}">${tm}</span>`).join(' '):'—';
-  const upd=t.updated?new Date(t.updated).toLocaleString('en-MY',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Approved:'p-approved'};
+  const teams=t.team.map(tm=>`<span class="ttag t-${tm}">${tm}</span>`).join(' ')||'—';
   let html=`<button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
     <div class="drawer-title">${esc(t.task)}</div>
-    <div class="drow"><span class="dkey">Status</span><span class="dval"><span class="pill ${sc[t.status]||'p-ideation'}">${esc(t.status||'—')}</span></span></div>
+    <div class="drow"><span class="dkey">Status</span><span class="dval"><span class="pill ${sc[t.status]||'p-other'}">${esc(t.status||'—')}</span></span></div>
     <div class="drow"><span class="dkey">Project</span><span class="dval">${esc(t.project||'—')}</span></div>
     <div class="drow"><span class="dkey">Team</span><span class="dval">${teams}</span></div>
-    <div class="drow"><span class="dkey">Owner</span><span class="dval">${esc(owner)}</span></div>
     <div class="drow"><span class="dkey">Due Date</span><span class="dval"><span class="dt ${dueClass(t.due)}">${fmtDate(t.due)}</span></span></div>
-    <div class="drow"><span class="dkey">Priority</span><span class="dval">${esc(t.priority||'—')}</span></div>
-    <div class="drow"><span class="dkey">Last Updated</span><span class="dval">${upd}</span></div>`;
-  if(t.status==='Blocked'&&t.blocker){html+=`<div class="dsec"><div class="dsec-title">Blocker</div><div class="blocker-box">${esc(t.blocker)}</div></div>`;}
-  if(t.next){html+=`<div class="dsec"><div class="dsec-title">Next Action</div><div class="nextact-box">${esc(t.next)}</div></div>`;}
-  if(t.brief){html+=`<div class="dsec"><div class="dsec-title">Brief</div><div class="brief-text">${esc(t.brief)}</div></div>`;}
-  if(t.remarks){html+=`<div class="dsec"><div class="dsec-title">Remarks</div><div class="brief-text">${esc(t.remarks)}</div></div>`;}
-  html+=`<div class="dsec" style="display:flex;gap:14px;align-items:center">
-    <a class="drawer-link" href="${t.url}" target="_blank">Open in Notion →</a>
-    <button onclick="qa('Tell me more about: ${esc(t.task)}')" style="background:none;border:none;font-size:12px;color:var(--accent2);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500">Ask ILMU →</button>
+    <div class="drow"><span class="dkey">Priority</span><span class="dval">${esc(t.priority||'—')}</span></div>`;
+  if(t.status==='Blocked'&&t.blocker)html+=`<div class="dsec"><div class="dsec-title">Blocker</div><div class="blocker-box">${esc(t.blocker)}</div></div>`;
+  if(t.next)html+=`<div class="dsec"><div class="dsec-title">Next Action</div><div class="nextact-box">${esc(t.next)}</div></div>`;
+  if(t.brief)html+=`<div class="dsec"><div class="dsec-title">Brief</div><div class="brief-txt">${esc(t.brief)}</div></div>`;
+  if(t.remarks)html+=`<div class="dsec"><div class="dsec-title">Latest Update</div><div class="brief-txt">${esc(t.remarks)}</div></div>`;
+  html+=`<div class="dsec" style="display:flex;gap:12px;align-items:center">
+    <a class="dl" href="${t.url}" target="_blank">Open in Notion →</a>
+    <button onclick="qa('Tell me more about this task: ${esc(t.task)}')" style="background:none;border:none;font-size:12px;color:var(--accent2);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500">Ask ILMU →</button>
   </div>`;
   document.getElementById('drawer-content').innerHTML=html;
   document.getElementById('drawer').style.display='block';
 }
 function closeDrawer(){document.getElementById('drawer').style.display='none';document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('sel'));}
 
-// ── AI CHAT ──
-function buildContext(){
-  const now=new Date().toLocaleDateString('en-MY',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const lines=allTasks.map(t=>{
-    const teams=Array.isArray(t.team)?t.team.join('/'):t.team;
-    const owner=t.pic||(t.person[0]||'unassigned');
-    const bl=t.blocker&&t.blocker!==t.task?` | Blocker: ${t.blocker}`:'';
-    const nx=t.next?` | Next: ${t.next}`:'';
-    return `[${t.status}] ${t.task} | Project: ${t.project||'—'} | Team: ${teams||'?'} | Owner: ${owner} | Due: ${fmtDate(t.due)} | Priority: ${t.priority||'?'}${bl}${nx}`;
-  });
-  return `Today: ${now}. Tasks loaded: ${allTasks.length}\n\nLIVE NOTION TASK BOARD:\n${lines.join('\n')}`;
+// ── REFRESH INFO ──
+function showRefreshInfo(){
+  alert('To refresh the data:\n\nAsk me in chat: "Refresh now" — I\'ll tell you how to get an updated version of this file with the latest Notion data baked in.\n\nOr message Bradley to run the dashboard refresh from Claude.');
 }
 
-const SYS=`You are ILMU, the AI assistant for YTLCC (YTL Creative Communications), a corporate creative department of ~30 people across Brand, Design, Comms, Digital, and Production teams.
-You have access to live Notion Task Board data. Answer questions naturally and helpfully.
-- Talk like a sharp, helpful colleague — concise, not robotic.
-- Show only what's relevant. Never dump everything.
-- Flag blockers clearly.
-- Group info by project or team when useful.
-- You may use **bold** sparingly. No markdown headers. Plain conversational text.`;
+// ── AI CHAT ──
+const SYS=`You are ILMU, the AI assistant for YTLCC (YTL Creative Communications) — a creative department of ~30 people across Brand, Design, Comms, Digital, and Production.
+You have live access to the YTLCC Notion Task Board. Answer questions naturally and helpfully.
+- Be concise and direct — like a sharp, helpful colleague.
+- Only show what is relevant. Don't dump everything.
+- Flag blockers clearly with their reason.
+- Group by project or team when helpful.
+- Use **bold** sparingly. No markdown headers. Plain conversational text.
+- Today's date is 28 April 2026.`;
 
-async function callAI(userMsg){
-  const ctx=buildContext();
-  const fullMsg=ctx+'\n\n---\n\n'+userMsg;
-  const prov=PROVIDERS[AI_PROVIDER];
-  const model=AI_MODEL||prov.model;
-
-  if(AI_PROVIDER==='claude'){
-    const r=await fetch(prov.url,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':AI_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model,max_tokens:1000,system:SYS,messages:[{role:'user',content:fullMsg}]})
-    });
-    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-    const d=await r.json();
-    return d.content?.[0]?.text||'(no response)';
-  }
-  if(AI_PROVIDER==='gemini'){
-    const url=prov.url.replace('{model}',model).replace('{key}',AI_KEY);
-    const r=await fetch(url,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:SYS+'\n\n'+fullMsg}]}]})
-    });
-    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-    const d=await r.json();
-    return d.candidates?.[0]?.content?.parts?.[0]?.text||'(no response)';
-  }
-  // OpenAI-compatible (openai, groq, mistral, openrouter)
-  const r=await fetch(prov.url,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
-    body:JSON.stringify({model,max_tokens:1000,messages:[{role:'system',content:SYS},{role:'user',content:fullMsg}]})
+function buildCtx(){
+  const lines=TASKS.map(t=>{
+    const bl=t.blocker?` | BLOCKER: ${t.blocker}`:'';
+    const nx=t.next?` | Next: ${t.next}`:'';
+    const rm=t.remarks?` | Update: ${t.remarks}`:'';
+    return `[${t.status}] ${t.task} | Project: ${t.project} | Team: ${t.team.join('/')} | Due: ${fmtDate(t.due)} | Priority: ${t.priority}${bl}${nx}${rm}`;
   });
-  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-  const d=await r.json();
-  return d.choices?.[0]?.message?.content||'(no response)';
+  return `LIVE NOTION TASK BOARD (${TASKS.length} tasks, loaded 28 Apr 2026):\n${lines.join('\n')}`;
 }
 
 function addMsg(role,text){
   const el=document.createElement('div');
   el.className='msg msg-'+(role==='user'?'user':'ilmu');
-  el.innerHTML=`<div class="msg-role">${role==='user'?'You':'ILMU'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  el.innerHTML=`<div class="msg-role">${role==='user'?'You':'ILMU'}</div><div class="msg-b">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
   const c=document.getElementById('chat-msgs');
   c.appendChild(el);c.scrollTop=c.scrollHeight;
 }
-function showTyping(){
-  const el=document.createElement('div');el.id='typing';el.className='msg msg-ilmu';
-  el.innerHTML='<div class="msg-role">ILMU</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
-  const c=document.getElementById('chat-msgs');c.appendChild(el);c.scrollTop=c.scrollHeight;
-}
-function removeTyping(){document.getElementById('typing')?.remove();}
 
-async function qa(text){addMsg('user',text);await askILMU(text);}
-async function send(){
-  const inp=document.getElementById('chat-in');
-  const t=inp.value.trim();if(!t)return;
-  inp.value='';addMsg('user',t);await askILMU(t);
-}
-async function askILMU(text){
-  showTyping();
-  try{
-    const reply=await callAI(text);
-    removeTyping();addMsg('ilmu',reply);
-  }catch(e){
-    removeTyping();addMsg('ilmu','Error: '+e.message);
+function showTyping(){const el=document.createElement('div');el.id='typing';el.className='msg msg-ilmu';el.innerHTML='<div class="msg-role">ILMU</div><div class="msg-b"><div class="typing"><span></span><span></span><span></span></div></div>';const c=document.getElementById('chat-msgs');c.appendChild(el);c.scrollTop=c.scrollHeight;}
+function rmTyping(){document.getElementById('typing')?.remove();}
+
+async function callAI(userMsg){
+  const ctx=buildCtx();
+  const fullMsg=ctx+'\n\n---\n\n'+userMsg;
+  const prov=PROVIDERS[AI_PROVIDER];
+  const model=AI_MODEL;
+
+  if(AI_PROVIDER==='claude'){
+    const r=await fetch(prov.url,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AI_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model,max_tokens:1000,system:SYS,messages:[{role:'user',content:fullMsg}]})});
+    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
+    const d=await r.json();return d.content?.[0]?.text||'(no response)';
   }
+  if(AI_PROVIDER==='gemini'){
+    const url=prov.url.replace('{model}',model).replace('{key}',AI_KEY);
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:SYS+'\n\n'+fullMsg}]}]})});
+    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
+    const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||'(no response)';
+  }
+  // OpenAI-compatible: ILMU, OpenAI, Groq, Mistral, OpenRouter
+  const r=await fetch(prov.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},body:JSON.stringify({model,max_tokens:1000,messages:[{role:'system',content:SYS},{role:'user',content:fullMsg}]})});
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
+  const d=await r.json();return d.choices?.[0]?.message?.content||'(no response)';
 }
+
+async function qa(text){addMsg('user',text);showTyping();try{const r=await callAI(text);rmTyping();addMsg('ilmu',r);}catch(e){rmTyping();addMsg('ilmu','Error: '+e.message);}}
+async function send(){const inp=document.getElementById('chat-in');const t=inp.value.trim();if(!t)return;inp.value='';await qa(t);}
+
+// Init render on load
+window.onload=()=>{if(document.getElementById('app').style.display!=='none'){updateStats();render();}};
 </script>
 </body>
 </html>
