@@ -312,15 +312,15 @@ const TASKS = [
 
 // ── STATE ──
 const PROVIDERS = {
-  'ilmu-claw':       {name:'ILMU Claw',        url:'https://api.ilmu.ai/v1/chat/completions',  model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
-  'ilmu-nemo-super': {name:'ILMU NEMO SUPER',  url:'https://api.ilmu.ai/v1/chat/completions',  model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
-  'ilmu-nemo-nano':  {name:'ILMU NEMO NANO',   url:'https://api.ilmu.ai/v1/chat/completions',  model:'ilmu-nemo-nano',           hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
-  claude:            {name:'Claude',            url:'https://api.anthropic.com/v1/messages',    model:'claude-sonnet-4-20250514', hint:'console.anthropic.com', hintUrl:'https://console.anthropic.com'},
-  openai:            {name:'ChatGPT',           url:'https://api.openai.com/v1/chat/completions',model:'gpt-4o-mini',            hint:'platform.openai.com',   hintUrl:'https://platform.openai.com/api-keys'},
-  gemini:            {name:'Gemini',            url:'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}',model:'gemini-1.5-flash',hint:'aistudio.google.com',hintUrl:'https://aistudio.google.com/app/apikey'},
-  groq:              {name:'Groq',              url:'https://api.groq.com/openai/v1/chat/completions',model:'llama3-8b-8192',    hint:'console.groq.com',      hintUrl:'https://console.groq.com/keys'},
-  mistral:           {name:'Mistral',           url:'https://api.mistral.ai/v1/chat/completions',model:'mistral-small-latest',  hint:'console.mistral.ai',    hintUrl:'https://console.mistral.ai/api-keys/'},
-  openrouter:        {name:'OpenRouter',        url:'https://openrouter.ai/api/v1/chat/completions',model:'meta-llama/llama-3-8b-instruct:free',hint:'openrouter.ai',hintUrl:'https://openrouter.ai/keys'}
+  'ilmu-claw':       {name:'ILMU Claw',        url:'https://ilmu-bot.jiawei9466.workers.dev?provider=ilmu',       model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  'ilmu-nemo-super': {name:'ILMU NEMO SUPER',  url:'https://ilmu-bot.jiawei9466.workers.dev?provider=ilmu',       model:'nemo-super',               hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  'ilmu-nemo-nano':  {name:'ILMU NEMO NANO',   url:'https://ilmu-bot.jiawei9466.workers.dev?provider=ilmu',       model:'ilmu-nemo-nano',           hint:'console.ilmu.ai',       hintUrl:'https://console.ilmu.ai/dashboard'},
+  claude:            {name:'Claude',            url:'https://ilmu-bot.jiawei9466.workers.dev?provider=claude',     model:'claude-sonnet-4-20250514', hint:'console.anthropic.com', hintUrl:'https://console.anthropic.com'},
+  openai:            {name:'ChatGPT',           url:'https://ilmu-bot.jiawei9466.workers.dev?provider=openai',     model:'gpt-4o-mini',              hint:'platform.openai.com',   hintUrl:'https://platform.openai.com/api-keys'},
+  gemini:            {name:'Gemini',            url:'https://ilmu-bot.jiawei9466.workers.dev?provider=gemini',     model:'gemini-1.5-flash',         hint:'aistudio.google.com',   hintUrl:'https://aistudio.google.com/app/apikey'},
+  groq:              {name:'Groq',              url:'https://ilmu-bot.jiawei9466.workers.dev?provider=groq',       model:'llama3-8b-8192',           hint:'console.groq.com',      hintUrl:'https://console.groq.com/keys'},
+  mistral:           {name:'Mistral',           url:'https://ilmu-bot.jiawei9466.workers.dev?provider=mistral',    model:'mistral-small-latest',     hint:'console.mistral.ai',    hintUrl:'https://console.mistral.ai/api-keys/'},
+  openrouter:        {name:'OpenRouter',        url:'https://ilmu-bot.jiawei9466.workers.dev?provider=openrouter', model:'meta-llama/llama-3-8b-instruct:free',hint:'openrouter.ai',hintUrl:'https://openrouter.ai/keys'}
 };
 
 let AI_KEY='', AI_PROVIDER='ilmu-claw', AI_MODEL='nemo-super';
@@ -462,23 +462,18 @@ async function callAI(userMsg){
   const ctx=buildCtx();
   const fullMsg=ctx+'\n\n---\n\n'+userMsg;
   const prov=PROVIDERS[AI_PROVIDER];
-  const model=AI_MODEL;
-
-  if(AI_PROVIDER==='claude'){
-    const r=await fetch(prov.url,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AI_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model,max_tokens:1000,system:SYS,messages:[{role:'user',content:fullMsg}]})});
-    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-    const d=await r.json();return d.content?.[0]?.text||'(no response)';
+  const r=await fetch(prov.url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
+    body:JSON.stringify({model:AI_MODEL,max_tokens:1000,messages:[{role:'system',content:SYS},{role:'user',content:fullMsg}]})
+  });
+  if(!r.ok){
+    let msg=r.status;
+    try{const e=await r.json();msg=e.error?.message||e.message||msg;}catch(x){}
+    throw new Error(msg);
   }
-  if(AI_PROVIDER==='gemini'){
-    const url=prov.url.replace('{model}',model).replace('{key}',AI_KEY);
-    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:SYS+'\n\n'+fullMsg}]}]})});
-    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-    const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||'(no response)';
-  }
-  // OpenAI-compatible: ILMU, OpenAI, Groq, Mistral, OpenRouter
-  const r=await fetch(prov.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},body:JSON.stringify({model,max_tokens:1000,messages:[{role:'system',content:SYS},{role:'user',content:fullMsg}]})});
-  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||r.status);}
-  const d=await r.json();return d.choices?.[0]?.message?.content||'(no response)';
+  const d=await r.json();
+  return d.choices?.[0]?.message?.content||d.content?.[0]?.text||'(no response)';
 }
 
 async function qa(text){addMsg('user',text);showTyping();try{const r=await callAI(text);rmTyping();addMsg('ilmu',r);}catch(e){rmTyping();addMsg('ilmu','Error: '+e.message);}}
