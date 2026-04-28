@@ -178,9 +178,9 @@
 <div id="setup">
   <div class="setup-card">
     <div class="setup-logo">IL<span>MU</span></div>
-    <div class="setup-sub">YTLCC Visibility Dashboard — enter your ILMU API key to activate the AI assistant</div>
+    <div class="setup-sub">YTLCC Visibility Dashboard — connected to live Notion via secure API worker</div>
     <div class="ilmu-note">
-      🇲🇾 This dashboard uses your live Notion data (already loaded) + ILMU AI hosted on YTL AI Cloud. Your data never leaves Malaysia.
+      This version fetches live task data from Notion through a secure worker. Do not paste your Notion secret into this HTML file.
     </div>
     <div class="setup-lbl">AI Provider</div>
     <select class="setup-select" id="ai-provider" onchange="updateHint()">
@@ -198,11 +198,13 @@
         <option value="openrouter">OpenRouter</option>
       </optgroup>
     </select>
-    <div class="setup-lbl">API Key</div>
+    <div class="setup-lbl">ILMU API Key <span style="color:var(--text3);font-weight:400">(optional for AI chat)</span></div>
     <input class="setup-input" id="ai-key" type="password" placeholder="sk-...">
+    <div class="setup-lbl">Notion Worker URL</div>
+    <input class="setup-input" id="notion-worker-url" type="url" placeholder="https://your-worker.workers.dev/api/tasks">
     <div class="provider-note" id="phint">Get your key from <a href="https://console.ilmu.ai/dashboard" target="_blank">console.ilmu.ai</a> · All three ILMU options use the same key.</div>
-    <button class="setup-btn" onclick="startApp()">Open Dashboard</button>
-    <div class="setup-footer">The task data is already loaded from Notion. The API key is only used for the ILMU chat assistant.</div>
+    <button class="setup-btn" onclick="startApp()">Connect Dashboard</button>
+    <div class="setup-footer">Dashboard data loads from Notion in real time. The ILMU key is only used for the chat assistant.</div>
   </div>
 </div>
 
@@ -213,12 +215,12 @@
       <div class="hlogo">IL<span>MU</span></div>
       <div class="hlogo-sep"></div>
       <div class="hlogo-sub">YTLCC Task Board</div>
-      <div class="sync-info"><div class="sync-dot"></div><span id="sync-lbl">Live data · 28 Apr 2026</span></div>
+      <div class="sync-info"><div class="sync-dot"></div><span id="sync-lbl">Not connected</span></div>
     </div>
     <div class="header-right">
       <button class="hbtn" onclick="filterByStatus('Blocked')">🚫 Blocked</button>
       <button class="hbtn" onclick="filterByStatus('')">All Tasks</button>
-      <button class="hbtn hbtn-accent" onclick="showRefreshInfo()">↺ Refresh data</button>
+      <button class="hbtn hbtn-accent" onclick="loadTasks(true)">↺ Refresh data</button>
     </div>
   </div>
 
@@ -275,7 +277,7 @@
       <div class="chat-msgs" id="chat-msgs">
         <div class="msg msg-ilmu">
           <div class="msg-role">ILMU</div>
-          <div class="msg-b">Connected to your live YTLCC Task Board — 20 tasks loaded across all projects. Ask me anything about blockers, deadlines, project status, or team workload.</div>
+          <div class="msg-b">Connect the dashboard to your Notion worker, then ask me anything about blockers, deadlines, project status, or team workload.</div>
         </div>
       </div>
       <div class="chat-foot">
@@ -288,27 +290,14 @@
 </div>
 
 <script>
-// ── LIVE NOTION DATA (fetched 28 Apr 2026) ──
-const TASKS = [
-  {id:"344cce4450b38164b577d18cecfd1ace",task:"Audio Museum Tour — Script Writing",project:"Audio Museum Tour",team:["Production"],status:"Blocked",priority:"🔴 High",due:"2026-04-20",next:"Brief copywriter once scope is confirmed",blocker:"Waiting to see if Hwei managed to re-write the script",remarks:"Staging environment is ready — only waiting on files",brief:"Write audio scripts for each exhibit floor of the museum tour.",url:"https://www.notion.so/344cce4450b38164b577d18cecfd1ace"},
-  {id:"34bcce4450b3811282d5f375a84e39ca",task:"Update BTRT website homepage banner with new campaign visuals",project:"BTRT Website Improvement",team:["Digital"],status:"Blocked",priority:"🔴 High",due:"2026-04-25",next:"Once assets received, upload to CMS and QA on staging before going live",blocker:"Staging environment is ready — only waiting on files",brief:"Replace existing homepage banner with new campaign assets.",url:"https://www.notion.so/34bcce4450b3811282d5f375a84e39ca"},
-  {id:"34bcce4450b381519e99da60a773a06a",task:"Plan and schedule May social media content calendar",project:"Social Media",team:["Digital"],status:"In Progress",priority:"🟡 Medium",due:"2026-04-28",next:"Get calendar approved by Brand before scheduling posts",blocker:"",remarks:"Template shared. Content gaps for Week 3 and 4.",brief:"Build the May content calendar for YTLCC social channels.",url:"https://www.notion.so/34bcce4450b381519e99da60a773a06a"},
-  {id:"34bcce4450b3819f8cfecce2e425455a",task:"Finalise narration script for all 12 museum tour stops",project:"Audio Museum Tour",team:["Comms"],status:"Review",priority:"🔴 High",due:"2026-04-28",next:"Send to voice-over artist for recording session booking",blocker:"",remarks:"Stops 1–8 approved. Stops 9–12 pending stakeholder sign-off.",brief:"Finalise narration scripts for the Audio Guided Museum Tour.",url:"https://www.notion.so/34bcce4450b3819f8cfecce2e425455a"},
-  {id:"34bcce4450b381faa48ceb27ecf28965",task:"Finalise LEAD 2026 speaker confirmation email",project:"LEAD 2026",team:["Comms"],status:"In Progress",priority:"🔴 High",due:"2026-04-28",next:"Send draft to Bradley for review before dispatch",blocker:"",remarks:"Speaker list finalised — waiting on AV specs from Production",brief:"Draft and send confirmation email to all confirmed speakers for LEAD 2026.",url:"https://www.notion.so/34bcce4450b381faa48ceb27ecf28965"},
-  {id:"34bcce4450b3814eb0dedb0dd4f32bba",task:"Prepare full event rundown for LEAD 2026",project:"LEAD 2026",team:["Brand"],status:"In Progress",priority:"🔴 High",due:"2026-04-29",next:"Share with Ian for final review before printing",blocker:"",remarks:"Waiting on final speaker order confirmation from Comms",brief:"Create a comprehensive minute-by-minute rundown document for LEAD 2026.",url:"https://www.notion.so/34bcce4450b3814eb0dedb0dd4f32bba"},
-  {id:"34bcce4450b3811497b1cf4515747d9c",task:"Audit all BTRT website pages for outdated content",project:"BTRT Website Improvement",team:["Digital"],status:"In Progress",priority:"🟡 Medium",due:"2026-04-30",next:"Compile audit report and flag pages for rewrite or removal",blocker:"",remarks:"60% complete — blog section still pending",brief:"Conduct a full content audit of the BTRT website.",url:"https://www.notion.so/34bcce4450b3811497b1cf4515747d9c"},
-  {id:"34bcce4450b3817da101ca211476fb42",task:"Review and approve Founders Day 2026 KV designs",project:"Founders Day 2026",team:["Design"],status:"Review",priority:"🟡 Medium",due:"2026-04-30",next:"Collect feedback and compile into one revision brief",blocker:"",remarks:"3 KV options submitted — Option B preferred internally",brief:"Design team completed first round of KV options for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b3817da101ca211476fb42"},
-  {id:"34bcce4450b38126928dd677f49422d6",task:"Audio Museum Tour App UI Review",project:"Audio Museum Tour",team:["Digital"],status:"Blocked",priority:"🔴 High",due:"2026-05-01",next:"Log all bugs in shared sheet and prioritise with dev team",blocker:"App build not yet received from external dev vendor. Mun Teng is following up.",remarks:"Target soft launch: mid-May",brief:"Test the Audio Museum Tour companion app on multiple devices.",url:"https://www.notion.so/34bcce4450b38126928dd677f49422d6"},
-  {id:"34bcce4450b3819d9b1bcb061980fd44",task:"Design stage backdrop and signage for LEAD 2026",project:"LEAD 2026",team:["Design"],status:"Review",priority:"🟡 Medium",due:"2026-05-02",next:"Submit print-ready files to Production once approved",blocker:"",remarks:"First draft done — awaiting Brand sign-off",brief:"Design the main stage backdrop, directional signage, and registration counter fascia for LEAD 2026.",url:"https://www.notion.so/34bcce4450b3819d9b1bcb061980fd44"},
-  {id:"34bcce4450b381c89db8c7c2aab3874c",task:"Prepare photography brief for May internal event",project:"Production Ad-Hoc Request",team:["Production"],status:"Draft",priority:"🟡 Medium",due:"2026-05-03",next:"Send brief to photographer and confirm shoot schedule",blocker:"",remarks:"Event details confirmed. Brief template being drafted.",brief:"Create a photography brief for the May internal event.",url:"https://www.notion.so/34bcce4450b381c89db8c7c2aab3874c"},
-  {id:"34bcce4450b38164b116f26cdb0d27c9",task:"Write social captions and EDM copy for Lunchtime Conversations Episode 4",project:"Lunchtime Conversations",team:["Comms"],status:"Draft",priority:"🟡 Medium",due:"2026-05-04",next:"Pass copy to Design team for asset production",blocker:"",remarks:"First draft in progress. Episode topic: Sustainable Leadership.",brief:"Write captions and copy for Episode 4 promotion.",url:"https://www.notion.so/34bcce4450b38164b116f26cdb0d27c9"},
-  {id:"34bcce4450b38113ba21e881c6926e06",task:"Design and send Founders Day 2026 Save the Date email",project:"Founders Day 2026",team:["Comms"],status:"Draft",priority:"🟡 Medium",due:"2026-05-05",next:"Get HTML template coded and tested across email clients",blocker:"",remarks:"Copy draft approved. Design pending.",brief:"Create a Save the Date EDM for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b38113ba21e881c6926e06"},
-  {id:"34bcce4450b38174ad88c2d83b3118eb",task:"Compile April social media performance report",project:"Social Media",team:["Digital"],status:"Draft",priority:"🟢 Low",due:"2026-05-05",next:"Present findings to Bradley in next Monday sync",blocker:"",remarks:"Raw data pulled. Report template being filled.",brief:"Pull April analytics from Instagram, Facebook, and LinkedIn.",url:"https://www.notion.so/34bcce4450b38174ad88c2d83b3118eb"},
-  {id:"34bcce4450b381b89625d52d517fea8a",task:"Create social media assets for Lunchtime Conversations Episode 4",project:"Lunchtime Conversations",team:["Design"],status:"In Progress",priority:"🔴 High",due:"2026-05-06",next:"Upload finalised assets to shared Drive and notify Digital team",blocker:"",remarks:"Speaker details confirmed. Recording date: May 8.",brief:"Design Instagram and LinkedIn graphics to promote Episode 4.",url:"https://www.notion.so/34bcce4450b381b89625d52d517fea8a"},
-  {id:"34bcce4450b3811cb206cd85319ed622",task:"Print and deliver 6x rollup banners for upcoming event",project:"Production Ad-Hoc Request",team:["Production"],status:"In Progress",priority:"🔴 High",due:"2026-05-08",next:"Confirm delivery address and event date with requestor",blocker:"",remarks:"Artwork approved. Print order placed with vendor.",brief:"Print 6 units of 85x200cm rollup banners based on approved artwork.",url:"https://www.notion.so/34bcce4450b3811cb206cd85319ed622"},
-  {id:"34bcce4450b3814a94b2c142cd68d9e0",task:"Layout and design the Founders Day 2026 programme booklet",project:"Founders Day 2026",team:["Design"],status:"Ideation",priority:"🟢 Low",due:"2026-05-10",next:"Send to printer once final copy is received from Comms",blocker:"",remarks:"Content not finalised — on hold until speaker lineup confirmed",brief:"Design a printed programme booklet for Founders Day 2026.",url:"https://www.notion.so/34bcce4450b3814a94b2c142cd68d9e0"},
-  {id:"344cce4450b381e1b8b1e925050eafd2",task:"BTRT Website — Build Landing Page Wireframe",project:"BTRT Website Improvement",team:["Brand"],status:"Ideation",priority:"🟡 Medium",due:"",next:"Share wireframe with stakeholder for feedback",blocker:"",remarks:"",brief:"Build wireframe for the new BTRT website landing page based on approved site map.",url:"https://www.notion.so/344cce4450b381e1b8b1e925050eafd2"},
-];
+
+// ── LIVE NOTION CONFIG ──
+// IMPORTANT: Do not put your Notion secret in this HTML.
+// Put the Notion API key inside the Cloudflare Worker as an environment secret.
+// Then paste your Worker endpoint here or enter it on the setup screen.
+const DEFAULT_NOTION_WORKER_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/api/tasks";
+
+let TASKS = [];
 
 // ── STATE ──
 const PROVIDERS = {
@@ -323,7 +312,7 @@ const PROVIDERS = {
   openrouter:        {name:'OpenRouter',        url:'https://ilmu-bot.jiawei9466.workers.dev?provider=openrouter', model:'meta-llama/llama-3-8b-instruct:free',hint:'openrouter.ai',hintUrl:'https://openrouter.ai/keys'}
 };
 
-let AI_KEY='', AI_PROVIDER='ilmu-claw', AI_MODEL='nemo-super';
+let AI_KEY='', AI_PROVIDER='ilmu-claw', AI_MODEL='nemo-super', NOTION_WORKER_URL=DEFAULT_NOTION_WORKER_URL;
 let activeStatus='', activePriority='', activeTeam='';
 let filtered=[];
 
@@ -331,20 +320,64 @@ function updateHint(){
   const id=document.getElementById('ai-provider').value;
   const p=PROVIDERS[id];
   let h=`Get your key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>`;
-  if(id.startsWith('ilmu')) h=`Get your <code style="font-family:'DM Mono',monospace;font-size:11px;background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">sk-...</code> key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>. All 3 ILMU options share the same key — only the model changes.`;
+  if(id.startsWith('ilmu')) h=`Get your <code style="font-family:'DM Mono',monospace;font-size:11px;background:rgba(0,0,0,0.06);padding:1px 4px;border-radius:3px">sk-...</code> key from <a href="${p.hintUrl}" target="_blank">${p.hint}</a>. This is optional. The Notion API key belongs in the Worker, not in this file.`;
   document.getElementById('phint').innerHTML=h;
 }
 
-function startApp(){
+async function startApp(){
   AI_KEY=document.getElementById('ai-key').value.trim();
-  if(!AI_KEY){alert('Please enter your API key.');return;}
   AI_PROVIDER=document.getElementById('ai-provider').value;
   AI_MODEL=PROVIDERS[AI_PROVIDER].model;
+  NOTION_WORKER_URL=(document.getElementById('notion-worker-url').value.trim() || DEFAULT_NOTION_WORKER_URL);
+  if(NOTION_WORKER_URL.includes("YOUR-WORKER-NAME")){
+    alert("Paste your deployed Notion Worker URL first.");
+    return;
+  }
+
   document.getElementById('setup').style.display='none';
   document.getElementById('app').style.display='block';
   const flag=AI_PROVIDER.startsWith('ilmu')?'  🇲🇾':'';
-  document.getElementById('side-prov').textContent=PROVIDERS[AI_PROVIDER].name+' · '+AI_MODEL+flag;
-  updateStats();render();
+  document.getElementById('side-prov').textContent=(AI_KEY ? PROVIDERS[AI_PROVIDER].name+' · '+AI_MODEL+flag : 'AI chat inactive · dashboard still works');
+  await loadTasks(true);
+
+  // Light polling, so managers can keep the dashboard open.
+  // Change 60000 to 30000 if you want 30-second refresh.
+  setInterval(()=>loadTasks(false), 60000);
+}
+
+// ── NOTION REAL-TIME LOAD ──
+async function loadTasks(showAlert){
+  setSync('Syncing…', 'amber');
+  try{
+    const r=await fetch(NOTION_WORKER_URL, {method:'GET', headers:{'Accept':'application/json'}, cache:'no-store'});
+    if(!r.ok){
+      let msg=r.status;
+      try{const e=await r.json();msg=e.error || e.message || msg;}catch(x){}
+      throw new Error(msg);
+    }
+    const data=await r.json();
+    TASKS=Array.isArray(data.tasks) ? data.tasks : [];
+    updateStats(); render();
+    const loadedAt=data.loadedAt ? new Date(data.loadedAt) : new Date();
+    document.getElementById('sync-lbl').textContent='Live Notion · '+loadedAt.toLocaleString('en-MY',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    setSync(null, 'green');
+    const first=document.querySelector('.msg-ilmu .msg-b');
+    if(first && first.textContent.includes('Connect the dashboard')){
+      first.textContent=`Connected to your live YTLCC Task Board — ${TASKS.length} tasks loaded from Notion. Ask me anything about blockers, deadlines, project status, or team workload.`;
+    }
+    if(showAlert===true && TASKS.length===0) alert('Connected, but no tasks were returned. Check your database ID, integration sharing, and property names.');
+  }catch(e){
+    setSync('Notion error: '+e.message, 'red');
+    if(showAlert===true) alert('Could not load Notion tasks:\n\n'+e.message);
+  }
+}
+
+function setSync(text, colour){
+  const dot=document.querySelector('.sync-dot');
+  if(colour==='green') dot.style.background='var(--green)';
+  if(colour==='amber') dot.style.background='var(--amber)';
+  if(colour==='red') dot.style.background='var(--red)';
+  if(text) document.getElementById('sync-lbl').textContent=text;
 }
 
 // ── STATS ──
@@ -354,7 +387,7 @@ function updateStats(){
   document.getElementById('s-blocked').textContent=TASKS.filter(t=>t.status==='Blocked').length;
   document.getElementById('s-progress').textContent=TASKS.filter(t=>t.status==='In Progress').length;
   document.getElementById('s-done').textContent=TASKS.filter(t=>t.status==='Done').length;
-  document.getElementById('s-high').textContent=active.filter(t=>t.priority==='🔴 High').length;
+  document.getElementById('s-high').textContent=active.filter(t=>t.priority==='🔴 High' || t.priority==='High').length;
 }
 
 // ── FILTERS ──
@@ -368,30 +401,31 @@ function render(){
   filtered=TASKS.filter(t=>{
     if(activeStatus&&t.status!==activeStatus)return false;
     if(activePriority&&t.priority!==activePriority)return false;
-    if(activeTeam&&!t.team.includes(activeTeam))return false;
-    if(q){const h=[t.task,t.project,...t.team,t.status,t.blocker].join(' ').toLowerCase();if(!h.includes(q))return false;}
+    if(activeTeam&&!((t.team||[]).includes(activeTeam)))return false;
+    if(q){const h=[t.task,t.project,...(t.team||[]),t.status,t.blocker].join(' ').toLowerCase();if(!h.includes(q))return false;}
     return true;
   });
   document.getElementById('row-cnt').textContent=filtered.length+' task'+(filtered.length!==1?'s':'');
   if(!filtered.length){document.getElementById('tbody').innerHTML='<tr><td colspan="6" class="empty-r">No tasks match the current filters</td></tr>';return;}
-  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Approved:'p-approved'};
-  const pc={'🔴 High':'ph','🟡 Medium':'pm','🟢 Low':'pl'};
+  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Draft:'p-other',Ideation:'p-other',Done:'p-done',Approved:'p-approved'};
+  const pc={'🔴 High':'ph','High':'ph','🟡 Medium':'pm','Medium':'pm','🟢 Low':'pl','Low':'pl'};
   document.getElementById('tbody').innerHTML=filtered.map((t,i)=>{
-    const tags=t.team.map(tm=>`<span class="ttag t-${tm}">${tm}</span>`).join('');
+    const tags=(t.team||[]).map(tm=>`<span class="ttag t-${escAttr(tm)}">${esc(tm)}</span>`).join('');
     const dc=dueClass(t.due);
     const sub=t.blocker?`<div class="td-s">⚠ ${esc(t.blocker.substring(0,38)+(t.blocker.length>38?'…':''))}</div>`:'';
     return `<tr onclick="openDrawer(${i})" data-i="${i}">
-      <td><div class="td-m">${esc(t.task.substring(0,46)+(t.task.length>46?'…':''))}</div>${sub}</td>
+      <td><div class="td-m">${esc((t.task||'Untitled').substring(0,46)+((t.task||'').length>46?'…':''))}</div>${sub}</td>
       <td><div class="proj-lbl">${esc(t.project||'—')}</div></td>
       <td>${tags||'<span style="color:var(--text3)">—</span>'}</td>
       <td><span class="pill ${sc[t.status]||'p-other'}">${esc(t.status||'—')}</span></td>
-      <td><span class="pri ${pc[t.priority]||''}">${t.priority||'—'}</span></td>
+      <td><span class="pri ${pc[t.priority]||''}">${esc(t.priority||'—')}</span></td>
       <td><span class="dt ${dc}">${fmtDate(t.due)}</span></td>
     </tr>`;
   }).join('');
 }
 
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function escAttr(s){return String(s||'').replace(/[^a-zA-Z0-9_-]/g,'');}
 function fmtDate(iso){if(!iso)return'—';const d=new Date(iso);return isNaN(d)?'—':d.toLocaleDateString('en-MY',{day:'2-digit',month:'short',year:'numeric'});}
 function dueClass(iso){if(!iso)return'';const d=new Date(iso);if(isNaN(d))return'';const diff=(d-new Date())/(864e5);return diff<0?'dt-over':diff<=7?'dt-soon':'dt-ok';}
 
@@ -400,8 +434,8 @@ function openDrawer(i){
   const t=filtered[i];if(!t)return;
   document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('sel'));
   document.querySelector(`[data-i="${i}"]`)?.classList.add('sel');
-  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Done:'p-done',Approved:'p-approved'};
-  const teams=t.team.map(tm=>`<span class="ttag t-${tm}">${tm}</span>`).join(' ')||'—';
+  const sc={Blocked:'p-blocked','In Progress':'p-inprogress',Review:'p-review',Draft:'p-other',Ideation:'p-other',Done:'p-done',Approved:'p-approved'};
+  const teams=(t.team||[]).map(tm=>`<span class="ttag t-${escAttr(tm)}">${esc(tm)}</span>`).join(' ')||'—';
   let html=`<button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
     <div class="drawer-title">${esc(t.task)}</div>
     <div class="drow"><span class="dkey">Status</span><span class="dval"><span class="pill ${sc[t.status]||'p-other'}">${esc(t.status||'—')}</span></span></div>
@@ -413,44 +447,41 @@ function openDrawer(i){
   if(t.next)html+=`<div class="dsec"><div class="dsec-title">Next Action</div><div class="nextact-box">${esc(t.next)}</div></div>`;
   if(t.brief)html+=`<div class="dsec"><div class="dsec-title">Brief</div><div class="brief-txt">${esc(t.brief)}</div></div>`;
   if(t.remarks)html+=`<div class="dsec"><div class="dsec-title">Latest Update</div><div class="brief-txt">${esc(t.remarks)}</div></div>`;
+  const safeTask=JSON.stringify('Tell me more about this task: '+(t.task||''));
   html+=`<div class="dsec" style="display:flex;gap:12px;align-items:center">
-    <a class="dl" href="${t.url}" target="_blank">Open in Notion →</a>
-    <button onclick="qa('Tell me more about this task: ${esc(t.task)}')" style="background:none;border:none;font-size:12px;color:var(--accent2);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500">Ask ILMU →</button>
+    <a class="dl" href="${escAttrUrl(t.url)}" target="_blank">Open in Notion →</a>
+    <button onclick='qa(${safeTask})' style="background:none;border:none;font-size:12px;color:var(--accent2);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500">Ask ILMU →</button>
   </div>`;
   document.getElementById('drawer-content').innerHTML=html;
   document.getElementById('drawer').style.display='block';
 }
+function escAttrUrl(s){return String(s||'#').replace(/"/g,'%22').replace(/</g,'%3C').replace(/>/g,'%3E');}
 function closeDrawer(){document.getElementById('drawer').style.display='none';document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('sel'));}
-
-// ── REFRESH INFO ──
-function showRefreshInfo(){
-  alert('To refresh the data:\n\nAsk me in chat: "Refresh now" — I\'ll tell you how to get an updated version of this file with the latest Notion data baked in.\n\nOr message Bradley to run the dashboard refresh from Claude.');
-}
 
 // ── AI CHAT ──
 const SYS=`You are ILMU, the AI assistant for YTLCC (YTL Creative Communications) — a creative department of ~30 people across Brand, Design, Comms, Digital, and Production.
-You have live access to the YTLCC Notion Task Board. Answer questions naturally and helpfully.
-- Be concise and direct — like a sharp, helpful colleague.
+You have access to the current YTLCC Notion Task Board data passed in the user message.
+- Be concise and direct, like a sharp, helpful colleague.
 - Only show what is relevant. Don't dump everything.
 - Flag blockers clearly with their reason.
 - Group by project or team when helpful.
 - Use **bold** sparingly. No markdown headers. Plain conversational text.
-- Today's date is 28 April 2026.`;
+- Today's date is ${new Date().toLocaleDateString('en-MY',{day:'2-digit',month:'long',year:'numeric'})}.`;
 
 function buildCtx(){
   const lines=TASKS.map(t=>{
     const bl=t.blocker?` | BLOCKER: ${t.blocker}`:'';
     const nx=t.next?` | Next: ${t.next}`:'';
     const rm=t.remarks?` | Update: ${t.remarks}`:'';
-    return `[${t.status}] ${t.task} | Project: ${t.project} | Team: ${t.team.join('/')} | Due: ${fmtDate(t.due)} | Priority: ${t.priority}${bl}${nx}${rm}`;
+    return `[${t.status}] ${t.task} | Project: ${t.project} | Team: ${(t.team||[]).join('/')} | Due: ${fmtDate(t.due)} | Priority: ${t.priority}${bl}${nx}${rm}`;
   });
-  return `LIVE NOTION TASK BOARD (${TASKS.length} tasks, loaded 28 Apr 2026):\n${lines.join('\n')}`;
+  return `LIVE NOTION TASK BOARD (${TASKS.length} tasks, loaded from worker):\n${lines.join('\n')}`;
 }
 
 function addMsg(role,text){
   const el=document.createElement('div');
   el.className='msg msg-'+(role==='user'?'user':'ilmu');
-  el.innerHTML=`<div class="msg-role">${role==='user'?'You':'ILMU'}</div><div class="msg-b">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  el.innerHTML=`<div class="msg-role">${role==='user'?'You':'ILMU'}</div><div class="msg-b">${esc(text).replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
   const c=document.getElementById('chat-msgs');
   c.appendChild(el);c.scrollTop=c.scrollHeight;
 }
@@ -459,6 +490,7 @@ function showTyping(){const el=document.createElement('div');el.id='typing';el.c
 function rmTyping(){document.getElementById('typing')?.remove();}
 
 async function callAI(userMsg){
+  if(!AI_KEY) return 'AI chat is not activated. Add your ILMU API key on the setup screen, or keep using the dashboard without chat.';
   const ctx=buildCtx();
   const fullMsg=ctx+'\n\n---\n\n'+userMsg;
   const prov=PROVIDERS[AI_PROVIDER];
@@ -479,8 +511,8 @@ async function callAI(userMsg){
 async function qa(text){addMsg('user',text);showTyping();try{const r=await callAI(text);rmTyping();addMsg('ilmu',r);}catch(e){rmTyping();addMsg('ilmu','Error: '+e.message);}}
 async function send(){const inp=document.getElementById('chat-in');const t=inp.value.trim();if(!t)return;inp.value='';await qa(t);}
 
-// Init render on load
-window.onload=()=>{if(document.getElementById('app').style.display!=='none'){updateStats();render();}};
+// Init helper
+window.onload=()=>{document.getElementById('notion-worker-url').value=DEFAULT_NOTION_WORKER_URL; updateHint();};
 </script>
 </body>
 </html>
